@@ -17,4 +17,8 @@ worldbank()
 
 # Update data
 
-In order to update the data you need to run the financial_indicators.R file and then rebuild the package using the generate_package.R script
+In order to update the data:
+1. run the financial_indicators.R script
+2. run the generate_package.R script
+
+The data updates almost yearly so there is no need for frequent updates
