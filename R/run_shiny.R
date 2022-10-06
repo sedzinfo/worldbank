@@ -12,7 +12,7 @@
 #' @keywords worldbank
 #' @export
 #' @examples
-#' worldbank()
+#' # worldbank()
 worldbank<-function() {
   # library(shiny)
   # library(magrittr)
@@ -277,3 +277,69 @@ worldbank<-function() {
            }
   )
 }
+##########################################################################################
+# DATA DOCUMENTATION
+##########################################################################################
+#' Financial Indicators
+#'
+#' A dataset containing financial indicators
+#'
+#' \itemize{
+#'   \item country. country name
+#'   \item code. iso country code
+#'   \item continent. continent
+#'   \item indicator. name of financial indicator
+#'   \item year. year
+#'   \item value. value of financial indicator
+#'   \item ci. country and financial indicator
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name mfi
+#' @usage data(mfi)
+#' @format A data frame
+NULL
+##########################################################################################
+# DATA DOCUMENTATION
+##########################################################################################
+#' Financial Indicators
+#'
+#' A dataset containing demographics
+#'
+#' \itemize{
+#'   \item country. country name
+#'   \item code. iso country code
+#'   \item continent. continent
+#'   \item year. year
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name mfi_cor
+#' @usage data(mfi_cor)
+#' @format A data frame
+NULL
+##########################################################################################
+# DATA DOCUMENTATION
+##########################################################################################
+#' Financial Indicators
+#'
+#' A dataset containing demographics
+#'
+#' \itemize{
+#'   \item country. country name
+#'   \item indicator. name of financial indicator
+#'   \item year. year
+#'   \item value. value of financial indicator
+#'   \item age. age group
+#'   \item unit. measurement unit
+#'   \item sex. sex
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name mfi_population
+#' @usage data(mfi_population)
+#' @format A data frame
+NULL

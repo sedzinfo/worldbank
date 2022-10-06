@@ -10,6 +10,6 @@ worldbank()
 World Bank financial indicators
 }
 \examples{
-worldbank()
+# worldbank()
 }
 \keyword{worldbank}
