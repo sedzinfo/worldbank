@@ -7,13 +7,15 @@
 #' @importFrom DT renderDataTable dataTableOutput datatable formatStyle
 #' @importFrom plotly plotlyOutput renderPlotly plot_ly layout animation_opts add_text
 #' @importFrom dplyr mutate group_by case_when
+#' @importFrom stats complete.cases
+#' @importFrom utils data
 #' @keywords worldbank
 #' @export
 #' @examples
 #' worldbank()
 worldbank<-function() {
-  library(shiny)
-  library(magrittr)
+  # library(shiny)
+  # library(magrittr)
   data(mfi)
   options(scipen=999)
 
@@ -267,7 +269,7 @@ worldbank<-function() {
                                 font=font_style)%>%
                  plotly::animation_opts(frame=500,transition=1,easing="linear",redraw=FALSE,mode="immediate")
              })
-             output$index_table=DT::renderDataTable({
+             output$index_table=shiny::renderDataTable({
                data<-data.frame(Indicator=unique(mfi$indicator))
                result<-DT::datatable(data,options=list(paging=FALSE))
                DT::formatStyle(result,names(result),0,target='row',lineHeight='80%')
