@@ -1,9 +1,9 @@
 ##########################################################################################
 # DIRECTORIES
 ##########################################################################################
-# R CMD check covid
-# R CMD Rd2pdf covid
-# R CMD build covid --resave-data
+# R CMD check worldbank
+# R CMD Rd2pdf worldbank
+# R CMD build worldbank --resave-data
 library(devtools)
 library(roxygen2)
 setwd(paste0(gsub("generate_package.R","",rstudioapi::getActiveDocumentContext()$path)))

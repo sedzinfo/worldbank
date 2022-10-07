@@ -244,7 +244,6 @@ worldbank<-function() {
                temp<-mfi_cor[,c(input$indicator_cor1,input$indicator_cor2,factorlist)]
                temp<-temp[complete.cases(temp),]
                temp$year<-droplevels(temp$year)
-               print(temp)
                plotly::plot_ly(temp,
                                x=temp[,input$indicator_cor1],
                                y=temp[,input$indicator_cor2],
