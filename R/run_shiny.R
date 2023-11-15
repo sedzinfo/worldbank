@@ -48,8 +48,7 @@ worldbank<-function() {
                             padding-bottom:0;
                             height: 25px;
                             }
-                           .navbar {min-height:25px;}'))
-                                 ),
+                           .navbar {min-height:25px;}'))),
                                  tabPanel("Country Comparison",
                                           selectizeInput(inputId="country_country_comp",
                                                          label="Country",
