@@ -25,7 +25,7 @@ The data updates almost yearly so there is no need for frequent updates
 
 # Screenshots
 
-<img src="https://raw.githubusercontent.com/sedzinfo/worldbank/master/worldbank1.png">
+<img src="https://raw.githubusercontent.com/sedzinfo/worldbank/master/screenshot/worldbank1.png">
 <img src="https://raw.githubusercontent.com/sedzinfo/worldbank/master/worldbank2.png">
 <img src="https://raw.githubusercontent.com/sedzinfo/worldbank/master/worldbank3.png">
 <img src="https://raw.githubusercontent.com/sedzinfo/worldbank/master/worldbank4.png">
