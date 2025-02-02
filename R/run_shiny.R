@@ -115,6 +115,13 @@ worldbank<-function() {
                                  choices=unique(temp_choice[complete.cases(temp_choice),"indicator"]),
                                  selected=c("Population, total"))
              })
+             observeEvent(input$country_indicator_comp, {
+               temp_choice<-mfi[mfi$country%in%input$country_indicator_comp,]
+               updateSelectInput(inputId="indicator_indicator_comp",
+                                 choices=unique(temp_choice[complete.cases(temp_choice),"indicator"]),
+                                 selected=c("Population, total"))
+               
+             })
              output$plot_country_comp<-plotly::renderPlotly({
                temp<-mfi[mfi$country%in%input$country_country_comp&mfi$indicator%in%input$indicator_country_comp,]
                temp<-temp[complete.cases(temp),]
