@@ -10,7 +10,7 @@ download.file("https://databank.worldbank.org/data/download/WDI_CSV.zip",
               method="libcurl",quiet=FALSE,mode="w",cacheOK=FALSE,extra=getOption("download.file.extra"),headers=NULL)
 unzip(zipfile=paste0(directory,"data/WDI_CSV.zip"),
       exdir=paste0(directory,"data/"),
-      files=c("WDIData.csv"),list=FALSE,overwrite=TRUE,junkpaths=FALSE,
+      files=c("WDICSV.csv"),list=FALSE,overwrite=TRUE,junkpaths=FALSE,
       unzip="internal",setTimes=FALSE)
 df<-read.csv(paste0(directory,"data/WDICSV.csv"),stringsAsFactors=FALSE)
 country_code<-read.csv(paste0(directory,"data/countrycode.csv"),stringsAsFactors=FALSE)
