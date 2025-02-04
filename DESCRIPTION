@@ -1,7 +1,7 @@
 Package: worldbank
 Title: Worldbank Financial Indicators
 Version: 0.0.0.9000
-Authors@R: person("Dimitrios", "Zacharatos", , "dimitrios@psycholate.com", role = c("aut", "cre"),
+Authors@R: person("Dimitrios", "Zacharatos", , "dzacharatos@yahoo.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-1789-8294"))
 Author: Dimitrios Zacharatos [aut, cre]
 Maintainer: Dimitrios Zacharatos <dimitrios@psycholate.com>
