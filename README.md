@@ -1,7 +1,6 @@
 # worldbank
 Worldbank data visualization
 
-
 # Installation Instructions
 ## install R
 installation instructions can be found here: https://cran.r-project.org/  
