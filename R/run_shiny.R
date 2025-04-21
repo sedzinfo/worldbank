@@ -16,7 +16,7 @@
 worldbank<-function() {
   data(mfi)
   options(scipen=999)
-  font_style<-list(family="sans serif",size=10,color='gray')
+  font_style<-list(size=15,color="gray25",weight="bold")
   colors=c("#e6194b","#3cb44b","#ffe119","#0082c8","#f58231","#911eb4","#46f0f0","#f032e6","#d2f53c","#fabebe","#008080","#e6beff","#aa6e28","#fffac8","#800000","#aaffc3","#808000","#ffd8b1","#000080","#808080","#ffffff","#000000")
   format_bignum=function(n) {
     dplyr::case_when(n>=1e12~paste(round(n/1e12),"Tn"),
@@ -25,7 +25,9 @@ worldbank<-function() {
                      n>=1e3~paste(round(n/1e3),"K"),
                      TRUE~as.character(n))
   }
-  shinyApp(ui=tagList(tags$head(tags$script('var dimension = [0, 0];
+  shinyApp(ui=tagList(tags$head(
+    #includeHTML("google-analytics.html"),
+                                tags$script('var dimension = [0, 0];
                                   $(document).on("shiny:connected", function(e) {
                                   dimension[0] = window.innerWidth;
                                   dimension[1] = window.innerHeight;
@@ -43,9 +45,10 @@ worldbank<-function() {
                             padding-bottom:0;
                             height: 25px;
                             }
-                           .navbar {min-height:25px;}'))),
+                           .navbar {min-height:25px;}'))
+                                 ),
                                  tabPanel("Country Comparison",
-                                          selectizeInput(inputId="country_country_comp",
+                                          selectizeInput(inputId="multiple_country_comp",
                                                          label="Country",
                                                          choices=sort(unique(as.character(mfi$country))),
                                                          selected=c("Greece","Turkey","Bulgaria"),
@@ -58,10 +61,12 @@ worldbank<-function() {
                                                          label="Indicator",
                                                          choices=sort(unique(mfi$indicator)),
                                                          selected=c("Population, total"),
+                                                         # options = list(maxOptions = 100, maxItems = 50),
+                                                         size=50,
                                                          width="100%"),
                                           plotly::plotlyOutput("plot_country_comp")),
                                  tabPanel("Indicator Comparison",
-                                          selectizeInput(inputId="indicator_indicator_comp",
+                                          selectizeInput(inputId="multiple_indicator_comp",
                                                          label="Indicator",
                                                          choices=sort(unique(mfi$indicator)),
                                                          selected=c("Population, male","Population, female","Population, total"),
@@ -74,14 +79,15 @@ worldbank<-function() {
                                                          label="Country",
                                                          choices=sort(unique(mfi$country)),
                                                          selected=c("Greece"),
+                                                         size=50,
                                                          width="100%"),
                                           plotly::plotlyOutput("plot_indicator_comp")),
                                  tabPanel("Pyramid",
-                                          fluidRow(column(5,selectizeInput("indicator_pyramid_country",
-                                                                           label="",
-                                                                           choices=sort(unique(mfi$country)),
-                                                                           selected="Greece",
-                                                                           width="100%"))),
+                                          selectizeInput("indicator_pyramid_country",
+                                                         label="",
+                                                         choices=sort(unique(mfi$country)),
+                                                         selected="Greece",
+                                                         width="100%"),
                                           plotly::plotlyOutput("plot_pyramid")),
                                  tabPanel("Barplot",
                                           fluidRow(column(5,selectizeInput("indicator_bar",
@@ -102,34 +108,35 @@ worldbank<-function() {
                                                                            width="100%"),style="display:inline-block")),
                                           plotly::plotlyOutput("plot_cor")),
                                  tabPanel("Map",
-                                          fluidRow(column(5,selectizeInput("indicator_map","",
-                                                                           choices=sort(unique(mfi$indicator)),
-                                                                           selected="Population, total",
-                                                                           width="100%"))),
+                                          selectizeInput("indicator_map","",
+                                                         choices=sort(unique(mfi$indicator)),
+                                                         selected="Population, total",
+                                                         width="100%"),
                                           plotly::plotlyOutput("plot_map")),
                                  tabPanel("Index",DT::dataTableOutput("index_table")))),
            server=function(input,output) {
-             observeEvent(input$country_country_comp, {
-               temp_choice<-mfi[mfi$country%in%input$country_country_comp,]
+             observeEvent(input$multiple_country_comp, {
+               temp_choice<-mfi[mfi$country%in%input$multiple_country_comp,]
+               indicator_country_comp<-input$indicator_country_comp
                updateSelectInput(inputId="indicator_country_comp",
                                  choices=unique(temp_choice[complete.cases(temp_choice),"indicator"]),
-                                 selected=c("Population, total"))
+                                 selected=indicator_country_comp)
              })
              observeEvent(input$country_indicator_comp, {
                temp_choice<-mfi[mfi$country%in%input$country_indicator_comp,]
-               updateSelectInput(inputId="indicator_indicator_comp",
+               multiple_indicator_comp<-input$multiple_indicator_comp
+               updateSelectInput(inputId="multiple_indicator_comp",
                                  choices=unique(temp_choice[complete.cases(temp_choice),"indicator"]),
-                                 selected=c("Population, total"))
-               
+                                 selected=multiple_indicator_comp)
              })
              output$plot_country_comp<-plotly::renderPlotly({
-               temp<-mfi[mfi$country%in%input$country_country_comp&mfi$indicator%in%input$indicator_country_comp,]
+               temp<-mfi[mfi$country%in%input$multiple_country_comp&mfi$indicator%in%input$indicator_country_comp,]
                temp<-temp[complete.cases(temp),]
                temp$year<-droplevels(temp$year)
                plotly::plot_ly(temp,
                                x=~temp$year,
                                y=~temp$value,
-                               text=~paste0("\nCountry=",temp$country,"\nYear=",temp$year,"\nValue=",temp$value),
+                               text=~paste0("\nCountry=",temp$country,"\nIndicator=",temp$indicator,"\nYear=",temp$year,"\nValue=",temp$value),
                                color=~temp$country,
                                mode="lines+markers",
                                type="scatter",
@@ -139,19 +146,19 @@ worldbank<-function() {
                  plotly::layout(autosize=TRUE,
                                 margin=list(l=50,r=50,b=50,t=50,pad=0),
                                 legend=list(orientation="h",xanchor="center",x=.5,y=1),
-                                title=paste0("Countries:",input$country_country_comp,"\t","Indicators:",input$indicator_country_comp),
-                                xaxis=list(title=""),
+                                title=paste("Indicator:",input$indicator_country_comp),
+                                xaxis=list(title="",tickangle=-90),
                                 yaxis=list(title=input$indicator_country_comp),
                                 font=font_style)
              })
              output$plot_indicator_comp<-plotly::renderPlotly({
-               temp<-mfi[mfi$country %in% input$country_indicator_comp & mfi$indicator %in% input$indicator_indicator_comp,]
+               temp<-mfi[mfi$country %in% input$country_indicator_comp & mfi$indicator %in% input$multiple_indicator_comp,]
                temp<-temp[complete.cases(temp),]
                temp$year<-droplevels(temp$year)
                plotly::plot_ly(temp,
                                x=~year,
                                y=~value,
-                               text=~paste0("\nIndicator=",temp$indicator,"\nYear=",temp$year,"\nValue=",temp$value),
+                               text=~paste0("\nCountry=",temp$country,"\nIndicator=",temp$indicator,"\nYear=",temp$year,"\nValue=",temp$value),
                                color=~indicator,
                                mode="lines+markers",
                                type="scatter",
@@ -161,8 +168,9 @@ worldbank<-function() {
                  plotly::layout(autosize=TRUE,
                                 margin=list(l=50,r=50,b=50,t=50,pad=0),
                                 legend=list(orientation="h",xanchor="center",x=.5,y=1),
-                                title=paste("Countries:",input$country_indicator_comp,"\t","Indicators:",input$indicator_indicator_comp),
-                                xaxis=list(title=""),
+                                title=paste("Country:",input$country_indicator_comp),
+                                xaxis=list(title="",tickangle=-90),
+                                # yaxis=list(title=gsub("],","]",toString(paste0("[",input$multiple_indicator_comp,"]")))),
                                 yaxis=list(title=""),
                                 font=font_style)
              })
@@ -182,10 +190,13 @@ worldbank<-function() {
                                text=~value,
                                width=(as.numeric(input$dimension[1])-30),
                                height=(as.numeric(input$dimension[2])-120)) %>%
-                 plotly::layout(bargap=.1,barmode='overlay',
-                                title=paste0(unique(temp$country)),
+                 plotly::layout(bargap=.1,
+                                barmode='overlay',
+                                title=paste("Country:",input$indicator_pyramid_country),
+                                # margin=list(t=60,b=135,l=0,r=0,pad=0),
+                                margin=list(l=50,r=50,b=50,t=50,pad=0),
                                 yaxis=list(title="Age Group"),
-                                xaxis=list(title="Population",
+                                xaxis=list(title=list(text="Population",standoff=3),
                                            tickmode='array',
                                            tickvals=-100:100,
                                            ticktext=paste0(c(100:0,1:100),"%")),
@@ -195,7 +206,7 @@ worldbank<-function() {
              output$plot_bar<-plotly::renderPlotly({
                temp<-mfi[mfi$indicator%in%input$indicator_bar,]
                temp<-temp[complete.cases(temp),]
-               temp<<-temp[temp$value>0,]
+               temp<-temp[temp$value>0,]
                temp$year<-droplevels(temp$year)
                temp<-dplyr::mutate(dplyr::group_by(temp,year),rank=order(order(value,year,decreasing=TRUE)))
                if(nrow(temp)>1) {
@@ -211,11 +222,14 @@ worldbank<-function() {
                                  type="bar",
                                  width=(as.numeric(input$dimension[1])-30),
                                  height=(as.numeric(input$dimension[2])-120)) %>%
-                   plotly::layout(xaxis=list(title=""),
+                   plotly::layout(title=paste0(unique(temp$indicator)),
+                                  # margin=list(t=60,b=135,l=0,r=0,pad=0),
+                                  margin=list(l=50,r=50,b=50,t=50,pad=0),
+                                  xaxis=list(title=""),
                                   yaxis=list(title=""),
                                   font=font_style,
                                   showlegend=FALSE) %>%
-                   plotly::add_text(text=format_bignum(temp$rank),textposition="right")%>%
+                   plotly::add_text(text=paste("Rank:",format_bignum(temp$rank)),textposition="right")%>%
                    plotly::animation_opts(frame=500,transition=1,easing="linear",redraw=FALSE,mode="immediate")
                }
              })
@@ -239,7 +253,7 @@ worldbank<-function() {
                                 showlegend=TRUE,
                                 margin=list(l=50,r=50,b=50,t=50,pad=0),
                                 legend=list(orientation="h",xanchor="center",x=.5,y=1),
-                                title=paste0("Indicator:",input$indicator_map),
+                                title=paste("Indicator:",input$indicator_map),
                                 xaxis=list(title=""),
                                 yaxis=list(title=""),
                                 geo=g,
@@ -269,7 +283,7 @@ worldbank<-function() {
                                 margin=list(l=50,r=50,b=50,t=50,pad=0),
                                 # legend=list(orientation="v",xanchor="center",x=.5,y=1),
                                 title="",
-                                xaxis=list(title=unique(input$indicator_cor1)),
+                                xaxis=list(title=list(text=unique(input$indicator_cor1),standoff=3)),
                                 yaxis=list(title=unique(input$indicator_cor2)),
                                 font=font_style)%>%
                  plotly::animation_opts(frame=500,transition=1,easing="linear",redraw=FALSE,mode="immediate")

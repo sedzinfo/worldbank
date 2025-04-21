@@ -7,7 +7,8 @@ graphics.off()
 directory<-gsub("financial_indicators.R","",rstudioapi::getSourceEditorContext()$path)
 download.file("https://databank.worldbank.org/data/download/WDI_CSV.zip",
               paste0(directory,"data/WDI_CSV.zip"),
-              method="libcurl",quiet=FALSE,mode="w",cacheOK=FALSE,extra=getOption("download.file.extra"),headers=NULL)
+              method="libcurl",quiet=FALSE,mode="w",
+              cacheOK=FALSE,extra=getOption("download.file.extra"),headers=NULL)
 unzip(zipfile=paste0(directory,"data/WDI_CSV.zip"),
       exdir=paste0(directory,"data/"),
       files=c("WDICSV.csv"),list=FALSE,overwrite=TRUE,junkpaths=FALSE,
@@ -24,7 +25,7 @@ df[df$Country.Name %in% "Congo, Rep.",]$Country.Name<-"Congo, Republic of the"
 df[df$Country.Name %in% "Egypt, Arab Rep.",]$Country.Name<-"Egypt"
 df[df$Country.Name %in% "Hong Kong SAR, China",]$Country.Name<-"Hong Kong"
 df[df$Country.Name %in% "Iran, Islamic Rep.",]$Country.Name<-"Iran"
-# df[df$Country.Name %in% "Korea, Dem. People’s Rep.",]$Country.Name<-"Korea, North"
+# df[df$Country.Name %in% "Korea, Dem. People???s Rep.",]$Country.Name<-"Korea, North"
 df[df$Country.Name %in% "Korea, Rep.",]$Country.Name<-"Korea, South"
 df[df$Country.Name %in% "Kyrgyz Republic",]$Country.Name<-"Kyrgyzstan"
 df[df$Country.Name %in% "Lao PDR",]$Country.Name<-"Laos"
@@ -54,13 +55,22 @@ mfi$year<-factor(mfi$year,levels=sort(unique(mdf$year)))
 mfi$code<-factor(mfi$code,levels=sort(unique(mfi$code)))
 mfi$country<-factor(mfi$country,levels=sort(unique(mfi$country)))
 mfi$continent<-factor(mfi$continent,levels=sort(unique(mfi$continent)))
-frequency_observation<-data.frame(table(mfi$indicator,mfi$country))
-names(frequency_observation)<-c("Indicator","Country","Frequency")
-ft<-frequency_observation[frequency_observation$Frequency>50,]
-mfi$ci<-paste(mfi$country,mfi$indicator)
-ft$ci<-paste(ft$Country,ft$Indicator)
-mfi<-tdf<-mfi[mfi$ci%in%ft$ci,]
-res<-data.frame(table(tdf$country,tdf$indicator))
+##########################################################################################
+# MEMBER
+##########################################################################################
+member_eu<-c("Austria","Belgium","Bulgaria","Croatia","Cyprus","Czech Republic",
+             "Denmark","Estonia","Finland","France","Germany","Greece",
+             "Hungary","Ireland","Italy","Latvia","Lithuania","Luxembourg",
+             "Malta","Netherlands","Poland","Portugal","Romania",
+             "Slovakia","Slovenia","Spain","Sweden")
+member_g7<-c("Canada","France","Germany","Italy","Japan","United Kingdom","United States")
+member_bricks<-c("Brazil","Russia","India","China","South Africa")
+# setdiff(member_eu,unique(as.character(mfi$country)))
+# setdiff(member_g7,unique(as.character(mfi$country)))
+# setdiff(member_bricks,unique(as.character(mfi$country)))
+mfi[mfi$country %in% member_eu,"member"]<-"EU"
+mfi[mfi$country %in% member_g7,"member"]<-"G7"
+mfi[mfi$country %in% member_bricks,"member"]<-"BRICKS"
 ##########################################################################################
 # CORRELATION
 ##########################################################################################
@@ -108,14 +118,6 @@ mfi_population$code<-mfi_population$continent<-NULL
 save(mfi,mfi_cor,mfi_population,file=paste0(directory,"data/mfi.rda"))
 load(file=paste0(directory,"data/mfi.rda"))
 
-workingfunctions::cdf(mfi)
-workingfunctions::cdf(mfi_cor)
-workingfunctions::cdf(mfi_population)
-
-
-
-
-
-
-
-
+# workingfunctions::cdf(mfi)
+# workingfunctions::cdf(mfi_cor)
+# workingfunctions::cdf(mfi_population)
