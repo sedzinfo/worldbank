@@ -36,7 +36,8 @@ mfi<-merge(country_code[,c("Country Code","Region")],
            all=TRUE)
 mfi<-mfi[complete.cases(mfi),]
 mfi<-mfi[order(mfi$Year),]
-mfi<-mfi[as.numeric(as.character(mfi$Year))>1989,]
+# mfi<-mfi[as.numeric(as.character(mfi$Year))>1989,]
+row.names(mfi)<-NULL
 ##########################################################################################
 # CORRELATION
 ##########################################################################################
@@ -45,6 +46,7 @@ mfi_cor<-reshape(mfi[,c("Country Name","Region","Indicator Name","Year","value")
                  idvar=c("Country Name","Region","Year"),
                  direction="wide")
 names(mfi_cor)<-gsub("value.","",names(mfi_cor),fixed=TRUE)
+row.names(mfi_cor)<-NULL
 ##########################################################################################
 # PYRAMID
 ##########################################################################################
@@ -78,16 +80,21 @@ mfi_population[grep(" 80 and above",mfi_population$`Indicator Name`),"age"]<-"80
 mfi_population[grep(" 0-14",mfi_population$`Indicator Name`),"age"]<-NA
 mfi_population[grep(" 15-64",mfi_population$`Indicator Name`),"age"]<-NA
 mfi_population[grep(" 65 and above",mfi_population$`Indicator Name`),"age"]<-NA
-mfi_population$age<-factor(mfi_population$age,levels=c("00-04","05-09","10-14","15-19","20-24","25-29","30-34","35-39","40-44","45-49","50-54","60-64","65-69","70-74","75-79","80+"))
+mfi_population$age<-factor(mfi_population$age,
+                           levels=c("00-04","05-09","10-14",
+                                    "15-19","20-24","25-29",
+                                    "30-34","35-39","40-44",
+                                    "45-49","50-54","60-64",
+                                    "65-69","70-74","75-79",
+                                    "80+"))
 mfi_population<-mfi_population[complete.cases(mfi_population),]
 mfi_population$`Country Code`<-mfi_population$Region<-NULL
 mfi_population$`2-alpha code`<-mfi_population$`Indicator Code`<-NULL
+row.names(mfi_population)<-NULL
 ##########################################################################################
 # SAVE
 ##########################################################################################
-mfi$Region<-row.names(mfi)<-NULL
-row.names(mfi_population)<-NULL
-row.names(mfi_cor)<-NULL
+mfi$Region<-NULL
 
 save(mfi,file=paste0(directory,"data/mfi.rda"))
 save(mfi_cor,file=paste0(directory,"data/mfi_cor.rda"))
