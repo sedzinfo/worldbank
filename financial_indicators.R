@@ -4,7 +4,7 @@
 rm(list=ls())
 cat("\014")
 graphics.off()
-directory<-gsub("financial_indicators.R","",rstudioapi::getSourceEditorContext()$path)
+directory<-paste0(dirname(rstudioapi::getActiveDocumentContext()$path),"/")
 download.file("https://databank.worldbank.org/data/download/WDI_CSV.zip",
               paste0(directory,"data/WDI_CSV.zip"),
               method="libcurl",quiet=FALSE,mode="w",
@@ -15,10 +15,12 @@ unzip(zipfile=paste0(directory,"data/WDI_CSV.zip"),
       unzip="internal",setTimes=FALSE)
 df_wdi<-read.csv(paste0(directory,"data/WDICSV.csv"),
                  stringsAsFactors=FALSE,
-                 check.names=FALSE)
+                 check.names=FALSE,
+                 na.strings="")
 country_code<-read.csv(paste0(directory,"data/WDICountry.csv"),
                        stringsAsFactors=FALSE,
-                       check.names=FALSE)
+                       check.names=FALSE,
+                       na.strings="")
 ##########################################################################################
 # BARPLOTS
 ##########################################################################################
@@ -32,10 +34,9 @@ mfi<-merge(country_code[,c("Country Code","Region")],
            mdf,
            by="Country Code",
            all=TRUE)
-mfi[mfi==""]<-NA
 mfi<-mfi[complete.cases(mfi),]
 mfi<-mfi[order(mfi$Year),]
-mfi<-mfi[as.numeric(as.character(mfi$Year))>2000,]
+mfi<-mfi[as.numeric(as.character(mfi$Year))>1989,]
 ##########################################################################################
 # CORRELATION
 ##########################################################################################
@@ -84,6 +85,10 @@ mfi_population$`2-alpha code`<-mfi_population$`Indicator Code`<-NULL
 ##########################################################################################
 # SAVE
 ##########################################################################################
+mfi$Region<-row.names(mfi)<-NULL
+row.names(mfi_population)<-NULL
+row.names(mfi_cor)<-NULL
+
 save(mfi,file=paste0(directory,"data/mfi.rda"))
 save(mfi_cor,file=paste0(directory,"data/mfi_cor.rda"))
 save(mfi_population,file=paste0(directory,"data/mfi_population.rda"))
