@@ -318,26 +318,29 @@ worldbank<-function() {
 ##########################################################################################
 # DATA DOCUMENTATION
 ##########################################################################################
-#' Financial Indicators
+#' World Bank Indicators Dataset
 #'
-#' A dataset containing financial indicators
+#' A cleaned dataset of key indicators from the World Bank for various countries across years.
 #'
-#' \itemize{
-#'   \item country. country name
-#'   \item code. iso country code
-#'   \item continent. continent
-#'   \item indicator. name of financial indicator
-#'   \item year. year
-#'   \item value. value of financial indicator
-#'   \item ci. country and financial indicator
+#' @format A data frame with one row per country-year-indicator combination:
+#' \describe{
+#'   \item{Country Code}{3-letter ISO country code (e.g., "ABW" for Aruba)}
+#'   \item{Region}{World Bank regional classification (e.g., "Latin America & Caribbean")}
+#'   \item{Country Name}{Full country name (e.g., "Aruba")}
+#'   \item{Indicator Name}{The name of the World Bank indicator (e.g., "School enrollment, primary, female (% gross)")}
+#'   \item{Year}{Observation year (numeric)}
+#'   \item{value}{Numeric value for the indicator in that country and year}
 #' }
 #'
-#' @docType data
-#' @keywords datasets
-#' @name mfi
-#' @usage data(mfi)
-#' @format A data frame
-NULL
+#' @details This dataset supports multiple development indicators (social, economic, demographic),
+#' covering multiple years and countries. It is used across various tabs in the World Bank Shiny app
+#' for data visualization.
+#'
+#' @source World Bank Open Data via [worldbank.org](https://data.worldbank.org)
+#'
+#' @examples
+#' head(mfi)
+"mfi"
 ##########################################################################################
 # DATA DOCUMENTATION
 ##########################################################################################
@@ -346,10 +349,10 @@ NULL
 #' A dataset containing demographics
 #'
 #' \itemize{
-#'   \item country. country name
-#'   \item code. iso country code
-#'   \item continent. continent
-#'   \item year. year
+#'   \item{Country Code}{3-letter ISO country code (e.g., "ABW" for Aruba)}
+#'   \item{Region}{World Bank regional classification (e.g., "Latin America & Caribbean")}
+#'   \item{Country Name}{Full country name (e.g., "Aruba")}
+#'   \item{Year}{Observation year (numeric)}
 #' }
 #'
 #' @docType data
@@ -357,27 +360,32 @@ NULL
 #' @name mfi_cor
 #' @usage data(mfi_cor)
 #' @format A data frame
-NULL
+#' @examples
+#' head(mfi_cor)
+"mfi_cor"
 ##########################################################################################
 # DATA DOCUMENTATION
 ##########################################################################################
-#' Financial Indicators
+#' Age-Sex Specific Population Percentages
 #'
-#' A dataset containing demographics
+#' A dataset containing age- and sex-specific population percentages for countries, based on World Bank data.
+#' Useful for creating population pyramids and analyzing demographic structures.
 #'
-#' \itemize{
-#'   \item country. country name
-#'   \item indicator. name of financial indicator
-#'   \item year. year
-#'   \item value. value of financial indicator
-#'   \item age. age group
-#'   \item unit. measurement unit
-#'   \item sex. sex
+#' @format A data frame with one row per country-year-age-sex group:
+#' \describe{
+#'   \item{Country Name}{Full country name (e.g., "Aruba")}
+#'   \item{Indicator Name}{The full indicator name (e.g., "Population ages 65-69, female (% of female population)")}
+#'   \item{Year}{Observation year (numeric)}
+#'   \item{value}{Percentage of population in the specified age-sex group}
+#'   \item{age}{Age group (e.g., "65-69", "70-74")}
+#'   \item{unit}{Unit of measurement (always "Percent")}
+#'   \item{sex}{Sex of the population group ("Female" or "Male")}
 #' }
 #'
-#' @docType data
-#' @keywords datasets
-#' @name mfi_population
-#' @usage data(mfi_population)
-#' @format A data frame
-NULL
+#' @details This dataset focuses on the percentage distribution of male and female populations across 5-year age groups. It is suitable for demographic visualizations such as population pyramids.
+#'
+#' @source World Bank Open Data via [worldbank.org](https://data.worldbank.org)
+#'
+#' @examples
+#' head(mfi_population)
+"mfi_population"
