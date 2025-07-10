@@ -13,11 +13,11 @@ directory<-paste0(dirname(rstudioapi::getActiveDocumentContext()$path),"/")
 #       exdir=paste0(directory,"data/"),
 #       files=c("WDICSV.csv"),list=FALSE,overwrite=TRUE,junkpaths=FALSE,
 #       unzip="internal",setTimes=FALSE)
-df_wdi<-read.csv(paste0(directory,"data/WDICSV.csv"),
+df_wdi<-read.csv(paste0(directory,"data_indicators/WDICSV.csv"),
                  stringsAsFactors=FALSE,
                  check.names=FALSE,
                  na.strings="")
-country_code<-read.csv(paste0(directory,"data/WDICountry.csv"),
+country_code<-read.csv(paste0(directory,"data_indicators/WDICountry.csv"),
                        stringsAsFactors=FALSE,
                        check.names=FALSE,
                        na.strings="")
@@ -94,11 +94,11 @@ row.names(mfi_population)<-NULL
 # SAVE
 ##########################################################################################
 mfi$Region<-NULL
-mfi<-mfi[as.numeric(as.character(mfi$Year))>=1990,]
+# mfi<-mfi[as.numeric(as.character(mfi$Year))>=1990,]
 mfi$Year<-droplevels(mfi$Year)
 row.names(mfi)<-NULL
 
-save(mfi,file=paste0(directory,"data/mfi.rda"))
+save(mfi,mfi_cor,mfi_population,file=paste0(directory,"data/mfi.rda"))
 save(mfi_cor,file=paste0(directory,"data/mfi_cor.rda"))
 save(mfi_population,file=paste0(directory,"data/mfi_population.rda"))
 
