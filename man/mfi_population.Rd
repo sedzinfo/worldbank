@@ -27,6 +27,7 @@ A dataset containing age- and sex-specific population percentages for countries,
 Useful for creating population pyramids and analyzing demographic structures.
 }
 \details{
-This dataset focuses on the percentage distribution of male and female populations across 5-year age groups. It is suitable for demographic visualizations such as population pyramids.
+This dataset focuses on the percentage distribution of male and female populations across 5-year age groups.
+It is suitable for demographic visualizations such as population pyramids.
 }
 \keyword{datasets}

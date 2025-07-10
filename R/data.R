@@ -56,7 +56,8 @@
 #'   \item{sex}{Sex of the population group ("Female" or "Male")}
 #' }
 #'
-#' @details This dataset focuses on the percentage distribution of male and female populations across 5-year age groups. It is suitable for demographic visualizations such as population pyramids.
+#' @details This dataset focuses on the percentage distribution of male and female populations across 5-year age groups. 
+#' It is suitable for demographic visualizations such as population pyramids.
 #'
 #' @source World Bank Open Data via [worldbank.org](https://data.worldbank.org)
 "mfi_population"
