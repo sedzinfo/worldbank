@@ -15,10 +15,13 @@ A dataset containing demographics
 }
 \details{
 \itemize{
-\item country. country name
-\item code. iso country code
-\item continent. continent
-\item year. year
+\item{Country Code}{3-letter ISO country code (e.g., "ABW" for Aruba)}
+\item{Region}{World Bank regional classification (e.g., "Latin America & Caribbean")}
+\item{Country Name}{Full country name (e.g., "Aruba")}
+\item{Year}{Observation year (numeric)}
 }
+}
+\examples{
+head(mfi_cor)
 }
 \keyword{datasets}

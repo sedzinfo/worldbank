@@ -3,25 +3,33 @@
 \docType{data}
 \name{mfi}
 \alias{mfi}
-\title{Financial Indicators}
+\title{World Bank Indicators Dataset}
 \format{
-A data frame
+A data frame with one row per country-year-indicator combination:
+\describe{
+\item{Country Code}{3-letter ISO country code (e.g., "ABW" for Aruba)}
+\item{Region}{World Bank regional classification (e.g., "Latin America & Caribbean")}
+\item{Country Name}{Full country name (e.g., "Aruba")}
+\item{Indicator Name}{The name of the World Bank indicator (e.g., "School enrollment, primary, female (\% gross)")}
+\item{Year}{Observation year (numeric)}
+\item{value}{Numeric value for the indicator in that country and year}
+}
+}
+\source{
+World Bank Open Data via \href{https://data.worldbank.org}{worldbank.org}
 }
 \usage{
-data(mfi)
+mfi
 }
 \description{
-A dataset containing financial indicators
+A cleaned dataset of key indicators from the World Bank for various countries across years.
 }
 \details{
-\itemize{
-\item country. country name
-\item code. iso country code
-\item continent. continent
-\item indicator. name of financial indicator
-\item year. year
-\item value. value of financial indicator
-\item ci. country and financial indicator
+This dataset supports multiple development indicators (social, economic, demographic),
+covering multiple years and countries. It is used across various tabs in the World Bank Shiny app
+for data visualization.
 }
+\examples{
+head(mfi)
 }
 \keyword{datasets}

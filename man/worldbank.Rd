@@ -2,14 +2,41 @@
 % Please edit documentation in R/run_shiny.R
 \name{worldbank}
 \alias{worldbank}
-\title{World Bank financial indicators}
+\title{Launch World Bank Data Shiny App}
 \usage{
 worldbank()
 }
+\value{
+A running Shiny app in the default web browser.
+}
 \description{
-World Bank financial indicators
+Initializes and launches a Shiny application for visualizing World Bank data. The app includes
+dynamic Plotly charts for comparing countries, indicators, and demographic statistics across time.
+}
+\details{
+This function:
+\itemize{
+\item Loads required datasets: \code{mfi}, \code{mfi_cor}, and \code{mfi_population}.
+\item Sets formatting options for numbers and fonts.
+\item Defines a helper function \code{format_bignum} for human-readable large numbers (e.g., K, M, Bn, Tn).
+\item Launches the Shiny app using \code{shinyApp(ui = ui, server = server)}.
+}
+
+The Shiny app interface includes:
+\describe{
+\item{Country Comparison}{Compare a selected indicator across countries.}
+\item{Indicator Comparison}{Compare multiple indicators for one country.}
+\item{Population Pyramid}{Visualize male/female population distribution.}
+\item{Barplot}{Rank countries by a selected indicator.}
+\item{Scatterplot}{Show relationship between two indicators.}
+\item{Map}{Animated choropleth map by year.}
+\item{Index}{Tabular view of the dataset.}
+}
+}
+\note{
+Ensure that the datasets \code{mfi}, \code{mfi_cor}, and \code{mfi_population} are available in your
+environment or loaded via a package before calling this function.
 }
 \examples{
 # worldbank()
 }
-\keyword{worldbank}

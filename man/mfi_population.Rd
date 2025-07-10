@@ -3,25 +3,33 @@
 \docType{data}
 \name{mfi_population}
 \alias{mfi_population}
-\title{Financial Indicators}
+\title{Age-Sex Specific Population Percentages}
 \format{
-A data frame
+A data frame with one row per country-year-age-sex group:
+\describe{
+\item{Country Name}{Full country name (e.g., "Aruba")}
+\item{Indicator Name}{The full indicator name (e.g., "Population ages 65-69, female (\% of female population)")}
+\item{Year}{Observation year (numeric)}
+\item{value}{Percentage of population in the specified age-sex group}
+\item{age}{Age group (e.g., "65-69", "70-74")}
+\item{unit}{Unit of measurement (always "Percent")}
+\item{sex}{Sex of the population group ("Female" or "Male")}
+}
+}
+\source{
+World Bank Open Data via \href{https://data.worldbank.org}{worldbank.org}
 }
 \usage{
-data(mfi_population)
+mfi_population
 }
 \description{
-A dataset containing demographics
+A dataset containing age- and sex-specific population percentages for countries, based on World Bank data.
+Useful for creating population pyramids and analyzing demographic structures.
 }
 \details{
-\itemize{
-\item country. country name
-\item indicator. name of financial indicator
-\item year. year
-\item value. value of financial indicator
-\item age. age group
-\item unit. measurement unit
-\item sex. sex
+This dataset focuses on the percentage distribution of male and female populations across 5-year age groups. It is suitable for demographic visualizations such as population pyramids.
 }
+\examples{
+head(mfi_population)
 }
 \keyword{datasets}
