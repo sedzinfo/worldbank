@@ -38,9 +38,6 @@
 #' @examples
 #' # worldbank()
 worldbank<-function() {
-  data(mfi)
-  data(mfi_cor)
-  data(mfi_population)
   options(scipen=999)
   font_style<-list(size=15,color="gray25",weight="bold")
   colors=c("#e6194b","#3cb44b","#ffe119","#0082c8","#f58231","#911eb4","#46f0f0",
