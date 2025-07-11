@@ -13,11 +13,11 @@ directory<-paste0(dirname(rstudioapi::getActiveDocumentContext()$path),"/")
 #       exdir=paste0(directory,"data/"),
 #       files=c("WDICSV.csv"),list=FALSE,overwrite=TRUE,junkpaths=FALSE,
 #       unzip="internal",setTimes=FALSE)
-df_wdi<-read.csv(paste0(directory,"data_indicators/WDICSV.csv"),
+df_wdi<-read.csv(paste0(directory,"data/WDICSV.csv"),
                  stringsAsFactors=FALSE,
                  check.names=FALSE,
                  na.strings="")
-country_code<-read.csv(paste0(directory,"data_indicators/WDICountry.csv"),
+country_code<-read.csv(paste0(directory,"data/WDICountry.csv"),
                        stringsAsFactors=FALSE,
                        check.names=FALSE,
                        na.strings="")

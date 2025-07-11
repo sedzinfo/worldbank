@@ -52,7 +52,7 @@ worldbank<-function() {
                      n>=1e3~paste(round(n/1e3),"K"),
                      TRUE~as.character(n))
   }
-  
+
   ui<-tagList(tags$head(
     # includeHTML("google-analytics.html"),
     tags$script('var dimension = [0, 0];
@@ -147,7 +147,7 @@ worldbank<-function() {
                                        width="100%"),
                         plotly::plotlyOutput("plot_map")),
                tabPanel("Index",DT::dataTableOutput("index_table"))))
-  
+
   server<-function(input,output,session) {
     observeEvent(input$multiple_country_comp, {
       temp_choice<-mfi[mfi$`Country Name`%in%input$multiple_country_comp,]
@@ -167,7 +167,7 @@ worldbank<-function() {
                            selected=multiple_indicator_comp,
                            server=TRUE)
     })
-    
+
     updateSelectizeInput(session,
                          inputId="indicator_cor1",
                          label="",
@@ -192,7 +192,7 @@ worldbank<-function() {
                          choices=sort(unique(mfi$`Indicator Name`)),
                          selected="Population, total",
                          server=TRUE)
-    
+
     output$plot_country_comp<-plotly::renderPlotly({
       temp<-mfi[mfi$`Country Name`%in%input$multiple_country_comp&mfi$`Indicator Name`%in%input$indicator_country_comp,]
       temp<-temp[complete.cases(temp),]
@@ -207,6 +207,7 @@ worldbank<-function() {
                       color=~temp$`Country Name`,
                       mode="lines+markers",
                       type="scatter",
+                      showlegend=TRUE,
                       # colors=colors,
                       width=(as.numeric(input$dimension[1])-30),
                       height=(as.numeric(input$dimension[2])-200)) %>%
@@ -214,8 +215,9 @@ worldbank<-function() {
                        margin=list(l=50,r=50,b=50,t=50,pad=0),
                        legend=list(orientation="h",xanchor="center",x=.5,y=1),
                        title=paste("Indicator:",input$indicator_country_comp),
-                       xaxis=list(title="",tickangle=-90),
+                       xaxis=list(title="Year",tickangle=-90),
                        yaxis=list(title=input$indicator_country_comp),
+                       showlegend=TRUE,
                        font=font_style)
     })
     output$plot_indicator_comp<-plotly::renderPlotly({
@@ -234,6 +236,7 @@ worldbank<-function() {
                       color=~temp$`Indicator Name`,
                       mode="lines+markers",
                       type="scatter",
+                      showlegend=TRUE,
                       # colors=colors,
                       width=(as.numeric(input$dimension[1])-30),
                       height=(as.numeric(input$dimension[2])-200)) %>%
@@ -241,9 +244,10 @@ worldbank<-function() {
                        margin=list(l=50,r=50,b=50,t=50,pad=0),
                        legend=list(orientation="h",xanchor="center",x=.5,y=1),
                        title=paste("Country:",input$country_indicator_comp),
-                       xaxis=list(title="",tickangle=-90),
+                       xaxis=list(title="Year",tickangle=-90),
                        # yaxis=list(title=gsub("],","]",toString(paste0("[",input$multiple_indicator_comp,"]")))),
                        yaxis=list(title=""),
+                       showlegend=TRUE,
                        font=font_style)
     })
     output$plot_pyramid<-plotly::renderPlotly({
