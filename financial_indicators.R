@@ -99,12 +99,8 @@ mfi$Year<-droplevels(mfi$Year)
 row.names(mfi)<-NULL
 
 save(mfi,mfi_cor,mfi_population,file=paste0(directory,"data/mfi.rda"))
-save(mfi_cor,file=paste0(directory,"data/mfi_cor.rda"))
-save(mfi_population,file=paste0(directory,"data/mfi_population.rda"))
 
 load(file=paste0(directory,"data/mfi.rda"))
-load(file=paste0(directory,"data/mfi_cor.rda"))
-load(file=paste0(directory,"data/mfi_population.rda"))
 
 # workingfunctions::cdf(mfi)
 # workingfunctions::cdf(mfi_cor)

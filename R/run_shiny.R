@@ -56,16 +56,22 @@ worldbank<-function() {
   ui<-tagList(tags$head(
     # includeHTML("google-analytics.html"),
     tags$script('var dimension = [0, 0];
-                                  $(document).on("shiny:connected", function(e) {
-                                  dimension[0] = window.innerWidth;
-                                  dimension[1] = window.innerHeight;
-                                  Shiny.onInputChange("dimension", dimension);
-                                  });
-                                  $(window).resize(function(e) {
-                                  dimension[0] = window.innerWidth;
-                                  dimension[1] = window.innerHeight;
-                                  Shiny.onInputChange("dimension", dimension);
-                                  });')),
+var resizeTimeout = null;
+
+$(document).on("shiny:connected", function(e) {
+  dimension[0] = window.innerWidth;
+  dimension[1] = window.innerHeight;
+  Shiny.setInputValue("dimension", dimension);
+});
+
+$(window).on("resize", function() {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(function() {
+    dimension[0] = window.innerWidth;
+    dimension[1] = window.innerHeight;
+    Shiny.setInputValue("dimension", dimension);
+  }, 250); // Wait 250ms after resize stops
+});')),
     navbarPage("Data: World Bank",
                tags$head(
                  tags$style(HTML('.navbar-nav > li > a,
@@ -315,7 +321,7 @@ worldbank<-function() {
       g<-list(showframe=FALSE,showcoastlines=TRUE,projection=list(type='Mercator'))
       temp<-mfi[mfi$`Indicator Name` %in% input$indicator_map,]
       # temp<-mfi[mfi$`Indicator Name` %in% "Population, total",]
-      temp$Region[temp$Region==""]<-NA
+      # temp$Region[temp$Region==""]<-NA
       temp<-temp[complete.cases(temp),]
       temp$Year<-droplevels(temp$Year)
       plotly::plot_ly(temp,
@@ -369,7 +375,7 @@ worldbank<-function() {
                        xaxis=list(title=list(text=unique(input$indicator_cor1),standoff=3)),
                        yaxis=list(title=unique(input$indicator_cor2)),
                        font=font_style)%>%
-        plotly::animation_opts(frame=500,transition=1,easing="linear",redraw=FALSE,mode="immediate")
+        plotly::animation_opts(frame=500,transition=1,easing="linear",redraw=FALSE,mode="afterall")
     })
     output$index_table=DT::renderDataTable({
       data<-data.frame(Indicator=unique(mfi$`Indicator Name`))
