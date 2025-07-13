@@ -18,8 +18,6 @@ install_github("sedzinfo/worldbank")
 Since the data range from 1960 onwards and there are thousands of indicators, we use git large file storage. Since the last update where the data file became larger than 100mb git will not accept directly so large files. As a result the traditional installation may not work.
 An alternative installation is to use the code "generate_package.R" script after the whole repo is downloaded as a zip file and extracted in a local directory.
 
-Run the generate_package.R script after you download the whole repo and put it in a directory of your choosing
-
 # Usage
 ```
 library(worldbank)
