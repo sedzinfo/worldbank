@@ -34,6 +34,7 @@
 #' @import shiny
 #' @import plotly
 #' @import dplyr
+#' @import htmltools
 #' @export
 #' @examples
 #' # worldbank()

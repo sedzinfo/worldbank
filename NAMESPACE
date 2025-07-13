@@ -2,5 +2,6 @@
 
 export(worldbank)
 import(dplyr)
+import(htmltools)
 import(plotly)
 import(shiny)
