@@ -39,8 +39,8 @@
 #' @examples
 #' # worldbank()
 worldbank<-function() {
-  data("mfi")
   options(scipen=999)
+  data("mfi")
   font_style<-list(size=15,color="gray25",weight="bold")
   colors=c("#e6194b","#3cb44b","#ffe119","#0082c8","#f58231","#911eb4","#46f0f0",
            "#f032e6","#d2f53c","#fabebe","#008080","#e6beff","#aa6e28","#fffac8",
@@ -53,7 +53,9 @@ worldbank<-function() {
                      n>=1e3~paste(round(n/1e3),"K"),
                      TRUE~as.character(n))
   }
-
+  ##########################################################################################
+  # 
+  ##########################################################################################
   ui<-tagList(tags$head(
     # includeHTML("google-analytics.html"),
     tags$script('var dimension = [0, 0];
@@ -154,7 +156,9 @@ $(window).on("resize", function() {
                                        width="100%"),
                         plotly::plotlyOutput("plot_map")),
                tabPanel("Index",DT::dataTableOutput("index_table"))))
-
+  ##########################################################################################
+  # 
+  ##########################################################################################
   server<-function(input,output,session) {
     observeEvent(input$multiple_country_comp, {
       temp_choice<-mfi[mfi$`Country Name`%in%input$multiple_country_comp,]
@@ -174,7 +178,7 @@ $(window).on("resize", function() {
                            selected=multiple_indicator_comp,
                            server=TRUE)
     })
-
+    
     updateSelectizeInput(session,
                          inputId="indicator_cor1",
                          label="",
@@ -199,7 +203,7 @@ $(window).on("resize", function() {
                          choices=sort(unique(mfi$`Indicator Name`)),
                          selected="Population, total",
                          server=TRUE)
-
+    
     output$plot_country_comp<-plotly::renderPlotly({
       temp<-mfi[mfi$`Country Name`%in%input$multiple_country_comp&mfi$`Indicator Name`%in%input$indicator_country_comp,]
       temp<-temp[complete.cases(temp),]
@@ -264,15 +268,20 @@ $(window).on("resize", function() {
       temp[temp$sex%in%"Male","value"]<-temp[temp$sex%in%"Male","value"]*-1
       temp$value<-round(temp$value,2)
       temp$Year<-droplevels(temp$Year)
+      temp$display_value<-NA
+      temp[temp$sex %in% "Male", "display_value"]<- temp[temp$sex %in% "Male", "value"] * -1
+      temp[temp$sex %in% "Female", "display_value"]<- temp[temp$sex %in% "Female", "value"]
       plotly::plot_ly(temp,
                       x=~temp$value,
                       y=~temp$age,
                       color=~temp$sex,
+                      ids=~temp$age,
                       type='bar',
                       frame=~Year,
                       orientation='h',
                       hoverinfo='text',
-                      text=~temp$value,
+                      textposition='outside',
+                      text=~temp$display_value,
                       width=(as.numeric(input$dimension[1])-30),
                       height=(as.numeric(input$dimension[2])-120)) %>%
         plotly::layout(bargap=.1,
@@ -285,7 +294,7 @@ $(window).on("resize", function() {
                                   tickvals=-100:100,
                                   ticktext=paste0(c(100:0,1:100),"%")),
                        font=font_style)%>%
-        plotly::animation_opts(frame=500,transition=1,easing="linear",redraw=FALSE,mode="immediate")
+        plotly::animation_opts(frame=500,easing="linear",redraw=TRUE,mode="immediate")
     })
     output$plot_bar<-plotly::renderPlotly({
       temp<-mfi[mfi$`Indicator Name`%in%input$indicator_bar,]
@@ -293,13 +302,21 @@ $(window).on("resize", function() {
       temp<-temp[complete.cases(temp),]
       temp<-temp[temp$value>0,]
       temp$Year<-droplevels(temp$Year)
-      temp<-dplyr::mutate(dplyr::group_by(temp,Year),rank=order(order(value,Year,decreasing=TRUE)))
+      temp<-dplyr::mutate(dplyr::group_by(temp,Year),
+                          rank=order(order(value,Year,decreasing=TRUE)))
+      temp_factor<-data.frame(temp[temp$Year%in%max(as.character(temp$Year),na.rm=TRUE),],check.names=FALSE)
+      
+      temp$`Country Name`<-factor(temp$`Country Name`,
+                                  levels=temp_factor[order(temp_factor$value),"Country Name"])
       if(nrow(temp)>1) {
         plotly::plot_ly(temp,
                         x=~temp$value,
                         y=~temp$`Country Name`,
-                        hovertext=~paste0("\nRank=",temp$rank,"\nCountry=",temp$`Country Name`,"\nValue=",format_bignum(temp$value)),
+                        hovertext=~paste0("\nRank=",temp$rank,
+                                          "\nCountry=",temp$`Country Name`,
+                                          "\nValue=",format_bignum(temp$value)),
                         frame=~Year,
+                        ids=~temp$`Country Name`,
                         hoverinfo="text",
                         # color=temp$`Country Name`,
                         # split=~continent,
@@ -315,7 +332,7 @@ $(window).on("resize", function() {
                          font=font_style,
                          showlegend=FALSE) %>%
           plotly::add_text(text=paste("Rank:",format_bignum(temp$rank)),textposition="right")%>%
-          plotly::animation_opts(frame=500,transition=1,easing="linear",redraw=FALSE,mode="immediate")
+          plotly::animation_opts(frame=1000,easing="linear",redraw=TRUE,mode="immediate")
       }
     })
     output$plot_map<-plotly::renderPlotly({
@@ -344,7 +361,8 @@ $(window).on("resize", function() {
                        xaxis=list(title=""),
                        yaxis=list(title=""),
                        geo=g,
-                       font=font_style)
+                       font=font_style)%>%
+        plotly::animation_opts(frame=1000,easing="linear",redraw=TRUE,mode="immediate")
     })
     output$plot_cor<-plotly::renderPlotly({
       factorlist<-c("Year","Country Name","Region","Population, total")
@@ -360,7 +378,9 @@ $(window).on("resize", function() {
                       color=~temp$Region,
                       size=~temp$`Population, total`,
                       frame=~Year,
-                      text=~paste("\nContinent=",temp$Region,"\nCountry=",temp$`Country Name`),
+                      ids=~temp$`Country Name`,
+                      text=~paste("\nContinent=",temp$Region,
+                                  "\nCountry=",temp$`Country Name`),
                       type="scatter",
                       mode="markers",
                       fill=~'',
@@ -376,7 +396,7 @@ $(window).on("resize", function() {
                        xaxis=list(title=list(text=unique(input$indicator_cor1),standoff=3)),
                        yaxis=list(title=unique(input$indicator_cor2)),
                        font=font_style)%>%
-        plotly::animation_opts(frame=500,transition=1,easing="linear",redraw=FALSE,mode="afterall")
+        plotly::animation_opts(frame=500,easing="linear",redraw=TRUE,mode="afterall")
     })
     output$index_table=DT::renderDataTable({
       data<-data.frame(Indicator=unique(mfi$`Indicator Name`))
@@ -384,5 +404,8 @@ $(window).on("resize", function() {
       DT::formatStyle(result,names(result),0,target='row',lineHeight='80%')
     })
   }
+  ##########################################################################################
+  # 
+  ##########################################################################################
   shinyApp(ui = ui, server = server)
 }

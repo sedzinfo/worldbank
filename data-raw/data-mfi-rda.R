@@ -4,4 +4,5 @@ directory<-paste0(dirname(rstudioapi::getActiveDocumentContext()$path),"/")
 directory<-gsub("/data-raw","",directory)
 load(file=paste0(directory,"data/mfi.rda"))
 
-usethis::use_data(mfi, overwrite = TRUE)
+usethis::use_data(mfi, internal=TRUE,overwrite = TRUE)
+
