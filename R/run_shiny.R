@@ -41,7 +41,7 @@
 worldbank<-function() {
   options(scipen=999)
   data("mfi")
-  font_style<-list(size=15,color="gray25",weight="bold")
+  font_style<-list(size=20,color="gray25",weight="bold")
   colors=c("#e6194b","#3cb44b","#ffe119","#0082c8","#f58231","#911eb4","#46f0f0",
            "#f032e6","#d2f53c","#fabebe","#008080","#e6beff","#aa6e28","#fffac8",
            "#800000","#aaffc3","#808000","#ffd8b1","#000080","#808080","#ffffff",
@@ -56,35 +56,27 @@ worldbank<-function() {
   ##########################################################################################
   # 
   ##########################################################################################
-  ui<-tagList(tags$head(
+  ui<-navbarPage(
     # includeHTML("google-analytics.html"),
-    tags$script('var dimension = [0, 0];
-var resizeTimeout = null;
-
-$(document).on("shiny:connected", function(e) {
-  dimension[0] = window.innerWidth;
-  dimension[1] = window.innerHeight;
-  Shiny.setInputValue("dimension", dimension);
-});
-
-$(window).on("resize", function() {
-  clearTimeout(resizeTimeout);
-  resizeTimeout = setTimeout(function() {
-    dimension[0] = window.innerWidth;
-    dimension[1] = window.innerHeight;
-    Shiny.setInputValue("dimension", dimension);
-  }, 250); // Wait 250ms after resize stops
-});')),
     navbarPage("Data: World Bank",
-               tags$head(
-                 tags$style(HTML('.navbar-nav > li > a,
-                                .navbar-brand {
-                                  padding-top:4px;
-                                  padding-bottom:0;
-                                  height: 25px;
-                                }
-                                .navbar {min-height:25px;}'))
-               ),
+               header = tags$head(
+                 tags$script(HTML('
+      var dimension = [0, 0];
+      var resizeTimeout = null;
+      $(document).on("shiny:connected", function(e) {
+        dimension[0] = window.innerWidth;
+        dimension[1] = window.innerHeight;
+        Shiny.setInputValue("dimension", dimension);
+      });
+      $(window).on("resize", function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+          dimension[0] = window.innerWidth;
+          dimension[1] = window.innerHeight;
+          Shiny.setInputValue("dimension", dimension);
+        }, 250);
+      });
+    '))),
                tabPanel("Country Comparison",
                         selectizeInput(inputId="multiple_country_comp",
                                        label="Country",
@@ -223,7 +215,7 @@ $(window).on("resize", function() {
                       width=(as.numeric(input$dimension[1])-30),
                       height=(as.numeric(input$dimension[2])-200)) %>%
         plotly::layout(autosize=TRUE,
-                       margin=list(l=50,r=50,b=50,t=50,pad=0),
+                       margin=list(l=50,r=50,b=250,t=100,pad=0),
                        legend=list(orientation="h",xanchor="center",x=.5,y=1),
                        title=paste("Indicator:",input$indicator_country_comp),
                        xaxis=list(title="Year",tickangle=-90),
@@ -252,7 +244,7 @@ $(window).on("resize", function() {
                       width=(as.numeric(input$dimension[1])-30),
                       height=(as.numeric(input$dimension[2])-200)) %>%
         plotly::layout(autosize=TRUE,
-                       margin=list(l=50,r=50,b=50,t=50,pad=0),
+                       margin=list(l=50,r=50,b=250,t=100,pad=0),
                        legend=list(orientation="h",xanchor="center",x=.5,y=1),
                        title=paste("Country:",input$country_indicator_comp),
                        xaxis=list(title="Year",tickangle=-90),
@@ -287,7 +279,7 @@ $(window).on("resize", function() {
         plotly::layout(bargap=.1,
                        barmode='overlay',
                        title=paste("Country:",input$indicator_pyramid_country),
-                       margin=list(l=50,r=50,b=50,t=50,pad=0),
+                       margin=list(l=50,r=50,b=250,t=100,pad=0),
                        yaxis=list(title="Age Group"),
                        xaxis=list(title=list(text="Population",standoff=3),
                                   tickmode='array',
@@ -326,7 +318,7 @@ $(window).on("resize", function() {
                         height=(as.numeric(input$dimension[2])-120)) %>%
           plotly::layout(title=paste0(unique(temp$`Indicator Name`)),
                          # margin=list(t=60,b=135,l=0,r=0,pad=0),
-                         margin=list(l=50,r=50,b=50,t=50,pad=0),
+                         margin=list(l=50,r=50,b=250,t=100,pad=0),
                          xaxis=list(title=""),
                          yaxis=list(title=""),
                          font=font_style,
@@ -355,7 +347,7 @@ $(window).on("resize", function() {
                       height=(as.numeric(input$dimension[2])-120)) %>%
         plotly::layout(autosize=TRUE,
                        showlegend=TRUE,
-                       margin=list(l=50,r=50,b=50,t=50,pad=0),
+                       margin=list(l=50,r=50,b=250,t=100,pad=0),
                        legend=list(orientation="h",xanchor="center",x=.5,y=1),
                        title=paste("Indicator:",input$indicator_map),
                        xaxis=list(title=""),
@@ -390,7 +382,7 @@ $(window).on("resize", function() {
                       height=(as.numeric(input$dimension[2])-120)) %>%
         plotly::layout(autosize=TRUE,
                        showlegend=TRUE,
-                       margin=list(l=50,r=50,b=50,t=50,pad=0),
+                       margin=list(l=50,r=50,b=250,t=100,pad=0),
                        # legend=list(orientation="v",xanchor="center",x=.5,y=1),
                        title="",
                        xaxis=list(title=list(text=unique(input$indicator_cor1),standoff=3)),
