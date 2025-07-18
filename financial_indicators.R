@@ -98,7 +98,7 @@ mfi$Region<-NULL
 mfi$Year<-droplevels(mfi$Year)
 row.names(mfi)<-NULL
 
-save(mfi,mfi_cor,mfi_population,file=paste0(directory,"data/mfi.rda"))
+save(mfi,mfi_cor,mfi_population,file=paste0(directory,"data/mfi.rda"),version=3)
 
 load(file=paste0(directory,"data/mfi.rda"))
 
