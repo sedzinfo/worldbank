@@ -41,3 +41,16 @@ The data updates almost yearly so there is no need for frequent updates
 <img src="https://raw.githubusercontent.com/sedzinfo/worldbank/master/screenshot/worldbank5.png">
 <img src="https://raw.githubusercontent.com/sedzinfo/worldbank/master/screenshot/worldbank6.png">
 <img src="https://raw.githubusercontent.com/sedzinfo/worldbank/master/screenshot/worldbank7.png">
+
+---
+
+![Stars](https://img.shields.io/github/stars/sedzinfo/worldbank)
+![Watchers](https://img.shields.io/github/watchers/sedzinfo/worldbank)
+![Repo Size](https://img.shields.io/github/repo-size/sedzinfo/worldbank)
+![Open Issues](https://img.shields.io/github/issues/sedzinfo/worldbank)
+![Forks](https://img.shields.io/github/forks/sedzinfo/worldbank)
+![Last Commit](https://img.shields.io/github/last-commit/sedzinfo/worldbank)
+![Contributors](https://img.shields.io/github/contributors/sedzinfo/worldbank)
+![License](https://img.shields.io/github/license/sedzinfo/worldbank)
+![Release](https://img.shields.io/github/v/release/sedzinfo/worldbank)
+![Workflow Status](https://img.shields.io/github/actions/workflow/status/sedzinfo/worldbank/main.yml)
