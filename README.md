@@ -32,6 +32,42 @@ In order to update the data:
 
 The data updates almost yearly so there is no need for frequent updates
 
+### Package Structure
+
+```
+worldbank/
+├── R/                    # R functions
+│   ├── data.R            # Data documentation
+│   └── run_shiny.R       # Shiny app code
+├── data/                 # Package datasets
+│   ├── mfi.rda           # Main indicators
+│   ├── WDICountry.csv    # Country metadata
+│   └── WDICSV.csv        # Raw data
+├── data-raw/             # Data processing scripts
+├── man/                  # Documentation
+└── screenshot/           # Application screenshots
+```
+
+## Features
+
+- 📊 **Country Comparison**: Compare a selected indicator across multiple countries over time
+- 📈 **Indicator Comparison**: Analyze multiple indicators for a specific country
+- 👥 **Population Pyramids**: Visualize demographic structures by age and gender
+- 📉 **Rankings**: Bar chart rankings of countries by selected indicators
+- 🔍 **Scatterplots**: Explore relationships between two indicators
+- 🗺️ **Animated Maps**: Interactive choropleth maps showing temporal changes
+- 📋 **Data Explorer**: Browse the complete dataset in tabular format
+
+## Data
+
+The package includes World Bank indicators covering:
+- Economic indicators (GDP, trade, inflation)
+- Social indicators (education, health, employment)
+- Demographic data (population by age and gender)
+- Development metrics spanning from 1960 to present
+
+Data source: [World Bank Open Data](https://data.worldbank.org)
+
 # Screenshots
 
 <img src="https://raw.githubusercontent.com/sedzinfo/worldbank/master/screenshot/worldbank1.png">
