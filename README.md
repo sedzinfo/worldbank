@@ -14,9 +14,23 @@ library(devtools)
 install_github("sedzinfo/worldbank")
 ```
 
+Note: `install_github()` may fail for this repository because package data files are tracked with Git LFS and GitHub source tarballs can contain LFS pointer files instead of binary `.rda` data.
+
 # Alternative installation
 Since the data range from 1960 onwards and there are thousands of indicators, we use git large file storage. Since the last update where the data file became larger than 100mb git will not accept directly so large files. As a result the traditional installation may not work.
-An alternative installation is to use the code "generate_package.R" script after the whole repo is downloaded as a zip file and extracted in a local directory.
+Use one of the following reliable options:
+
+1. Clone the repository with Git LFS enabled and install locally:
+```
+git lfs install
+git clone https://github.com/sedzinfo/worldbank.git
+```
+Then in R:
+```
+devtools::install_local("worldbank")
+```
+
+2. Download the full repository and regenerate package data locally by running `financial_indicators.R` and then `generate_package.R`.
 
 # Usage
 ```
