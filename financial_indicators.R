@@ -36,16 +36,6 @@ mfi<-merge(country_code[,c("Country Code","Region")],
            all=TRUE)
 mfi<-mfi[complete.cases(mfi),]
 mfi<-mfi[order(mfi$Year),]
-row.names(mfi)<-NULL
-##########################################################################################
-# CORRELATION
-##########################################################################################
-mfi_cor<-reshape(mfi[,c("Country Name","Region","Indicator Name","Year","value")],
-                 timevar="Indicator Name",
-                 idvar=c("Country Name","Region","Year"),
-                 direction="wide")
-names(mfi_cor)<-gsub("value.","",names(mfi_cor),fixed=TRUE)
-row.names(mfi_cor)<-NULL
 ##########################################################################################
 # PYRAMID
 ##########################################################################################
@@ -98,9 +88,7 @@ mfi$Region<-NULL
 mfi$Year<-droplevels(mfi$Year)
 row.names(mfi)<-NULL
 
-save(mfi,mfi_cor,mfi_population,file=paste0(directory,"data/mfi.rda"),version=3)
-
-load(file=paste0(directory,"data/mfi.rda"))
+save(mfi,country_code,mfi_population,file=paste0(directory,"data/mfi.rda"),version=3)
 
 # workingfunctions::cdf(mfi)
 # workingfunctions::cdf(mfi_cor)

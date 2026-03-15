@@ -356,40 +356,78 @@ worldbank<-function() {
                        font=font_style)%>%
         plotly::animation_opts(frame=1000,easing="linear",redraw=TRUE,mode="immediate")
     })
-    output$plot_cor<-plotly::renderPlotly({
-      factorlist<-c("Year","Country Name","Region","Population, total")
-      temp<-mfi_cor[,c(input$indicator_cor1,input$indicator_cor2,factorlist)]
-      # temp<-mfi_cor[,c("Population, total","Population, total",factorlist)]
-      temp<-temp[complete.cases(temp),]
-      temp$Region[temp$Region==""]<-NA
-      temp<-temp[!is.na(temp$Region),]
-      temp$Year<-droplevels(temp$Year)
-      plotly::plot_ly(temp,
-                      x=temp[,1],
-                      y=temp[,2],
-                      color=~temp$Region,
-                      size=~temp$`Population, total`,
-                      frame=~Year,
-                      ids=~temp$`Country Name`,
-                      text=~paste("\nContinent=",temp$Region,
-                                  "\nCountry=",temp$`Country Name`),
-                      type="scatter",
-                      mode="markers",
-                      fill=~'',
-                      marker=list(sizemode='diameter'),
-                      # colors=colors,
-                      width=(as.numeric(input$dimension[1])-30),
-                      height=(as.numeric(input$dimension[2])-120)) %>%
-        plotly::layout(autosize=TRUE,
-                       showlegend=TRUE,
-                       margin=list(l=50,r=50,b=250,t=100,pad=0),
-                       # legend=list(orientation="v",xanchor="center",x=.5,y=1),
-                       title="",
-                       xaxis=list(title=list(text=unique(input$indicator_cor1),standoff=3)),
-                       yaxis=list(title=unique(input$indicator_cor2)),
-                       font=font_style)%>%
-        plotly::animation_opts(frame=500,easing="linear",redraw=TRUE,mode="afterall")
-    })
+  output$plot_cor<-plotly::renderPlotly({
+    gc()
+    ##########################################################################################
+    # mfi_temp<-mfi[mfi$`Indicator Name`%in%c("Mortality rate, adult, male (per 1,000 male adults)","Mortality rate, infant (per 1,000 live births)","Population, total"),]
+    mfi_temp<-mfi[mfi$`Indicator Name`%in%c(input$indicator_cor1,input$indicator_cor2,"Population, total"),]
+    mfi_cor<-reshape(mfi_temp[,c("Country Name","Indicator Name","Year","value")],
+                     timevar="Indicator Name",
+                     idvar=c("Country Name","Year"),
+                     direction="wide")
+    names(mfi_cor)<-gsub("value.","",names(mfi_cor),fixed=TRUE)
+    row.names(mfi_cor)<-NULL
+    
+    mfi_cor<-merge(country_code[,c("Country Code","Short Name","Region")],mfi_cor,by.x=c("Short Name"),by.y=c("Country Name"),all.y=TRUE)
+    ##########################################################################################
+    factorlist<-c("Year","Short Name","Region","Population, total")
+    temp<-mfi_cor[,c(input$indicator_cor1,input$indicator_cor2,factorlist)]
+    # temp<-mfi_cor[,c("Population, total","Population, total",factorlist)]
+    temp<-temp[complete.cases(temp),]
+    temp$Region[temp$Region==""]<-NA
+    temp<-temp[!is.na(temp$Region),]
+    temp$Year<-droplevels(temp$Year)
+    plotly::plot_ly(temp,
+                    x=temp[,1],
+                    y=temp[,2],
+                    color=~temp$Region,
+                    size=~temp$`Population, total`,
+                    frame=~Year,
+                    ids=~temp$`Short Name`,
+                    text=~paste("\nRegion=",temp$Region,
+                                "\nCountry=",temp$`Short Name`),
+                    type="scatter",
+                    mode="markers",
+                    fill=~'',
+                    marker=list(sizemode='diameter'),
+                    # colors=colors,
+                    width=(as.numeric(input$dimension[1])-30),
+                    height=(as.numeric(input$dimension[2])-120)
+    ) %>%
+      plotly::layout(autosize=TRUE,
+                     showlegend=TRUE,
+                     margin=list(l=50,r=50,b=250,t=100,pad=0),
+                     # legend=list(orientation="v",xanchor="center",x=.5,y=1),
+                     title="",
+                     xaxis=list(title=list(text=unique(input$indicator_cor1),standoff=3)),
+                     yaxis=list(title=unique(input$indicator_cor2)),
+                     font=font_style)%>%
+      plotly::animation_opts(frame=500,easing="linear",redraw=TRUE,mode="afterall") %>%
+      layout(
+        updatemenus = list(
+          list(
+            type = "buttons",
+            direction = "right",
+            x = 0,   # aligns with play button
+            y = 0,   # aligns with play button
+            showactive = FALSE,
+            buttons = list(
+              list(
+                label = "Pause",
+                method = "animate",
+                args = list(NULL, list(mode = "none"))
+              ),
+              # Your Stop button
+              list(
+                label = "Stop",
+                method = "animate",
+                args = list(NULL, list(mode = "immediate"))
+              )
+            )
+          )
+        )
+      )
+  })
     output$index_table=DT::renderDataTable({
       data<-data.frame(Indicator=unique(mfi$`Indicator Name`))
       result<-DT::datatable(data,options=list(paging=FALSE))
