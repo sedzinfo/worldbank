@@ -88,7 +88,9 @@ mfi$Region<-NULL
 mfi$Year<-droplevels(mfi$Year)
 row.names(mfi)<-NULL
 
-save(mfi,country_code,mfi_population,file=paste0(directory,"data/mfi.rda"),version=3)
+save(mfi,country_code,file=paste0(directory,"data/mfi.rda"),version=3)
+save(country_code,file=paste0(directory,"data/country_code.rda"),version=3)
+save(mfi_population,file=paste0(directory,"data/mfi_population.rda"),version=3)
 
 # workingfunctions::cdf(mfi)
 # workingfunctions::cdf(mfi_cor)

@@ -24,22 +24,6 @@
 ##########################################################################################
 # DATA DOCUMENTATION
 ##########################################################################################
-#' Financial Indicators
-#'
-#' A dataset containing demographics
-#'
-#' \itemize{
-#'   \item{Country Code}{3-letter ISO country code (e.g., "ABW" for Aruba)}
-#'   \item{Region}{World Bank regional classification (e.g., "Latin America & Caribbean")}
-#'   \item{Country Name}{Full country name (e.g., "Aruba")}
-#'   \item{Year}{Observation year (numeric)}
-#' }
-#'
-#' @source World Bank Open Data via [worldbank.org](https://data.worldbank.org)
-"mfi_cor"
-##########################################################################################
-# DATA DOCUMENTATION
-##########################################################################################
 #' Age-Sex Specific Population Percentages
 #'
 #' A dataset containing age- and sex-specific population percentages for countries, based on World Bank data.
@@ -56,7 +40,7 @@
 #'   \item{sex}{Sex of the population group ("Female" or "Male")}
 #' }
 #'
-#' @details This dataset focuses on the percentage distribution of male and female populations across 5-year age groups. 
+#' @details This dataset focuses on the percentage distribution of male and female populations across 5-year age groups.
 #' It is suitable for demographic visualizations such as population pyramids.
 #'
 #' @source World Bank Open Data via [worldbank.org](https://data.worldbank.org)
