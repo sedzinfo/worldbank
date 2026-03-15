@@ -9,11 +9,11 @@ A data frame with one row per country-year-age-sex group:
 \describe{
 \item{Country Name}{Full country name (e.g., "Aruba")}
 \item{Indicator Name}{The full indicator name (e.g., "Population ages 65-69, female (\% of female population)")}
-\item{Year}{Observation year (numeric)}
+\item{Year}{Observation year}
 \item{value}{Percentage of population in the specified age-sex group}
 \item{age}{Age group (e.g., "65-69", "70-74")}
-\item{unit}{Unit of measurement (always "Percent")}
-\item{sex}{Sex of the population group ("Female" or "Male")}
+\item{unit}{Unit of measurement ("Percent" or "Frequency")}
+\item{sex}{Sex of the population group ("Female", "Male", or "Total")}
 }
 }
 \source{

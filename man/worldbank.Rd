@@ -16,7 +16,8 @@ dynamic Plotly charts for comparing countries, indicators, and demographic stati
 \details{
 This function:
 \itemize{
-\item Loads required datasets: \code{mfi}, \code{mfi_cor}, and \code{mfi_population}.
+\item Loads required datasets: \code{mfi}, \code{country_code}, and \code{mfi_population}.
+\item Builds \code{mfi_cor} on the fly from selected indicators in \code{mfi}.
 \item Sets formatting options for numbers and fonts.
 \item Defines a helper function \code{format_bignum} for human-readable large numbers (e.g., K, M, Bn, Tn).
 \item Launches the Shiny app using \code{shinyApp(ui = ui, server = server)}.
@@ -34,7 +35,7 @@ The Shiny app interface includes:
 }
 }
 \note{
-Ensure that the datasets \code{mfi}, \code{mfi_cor}, and \code{mfi_population} are available in your
+Ensure that the datasets \code{mfi}, \code{country_code}, and \code{mfi_population} are available in your
 environment or loaded via a package before calling this function.
 }
 \examples{

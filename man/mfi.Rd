@@ -8,10 +8,9 @@
 A data frame with one row per country-year-indicator combination:
 \describe{
 \item{Country Code}{3-letter ISO country code (e.g., "ABW" for Aruba)}
-\item{Region}{World Bank regional classification (e.g., "Latin America & Caribbean")}
 \item{Country Name}{Full country name (e.g., "Aruba")}
 \item{Indicator Name}{The name of the World Bank indicator (e.g., "School enrollment, primary, female (\% gross)")}
-\item{Year}{Observation year (numeric)}
+\item{Year}{Observation year}
 \item{value}{Numeric value for the indicator in that country and year}
 }
 }

@@ -10,7 +10,8 @@
 #' @details
 #' This function:
 #' \itemize{
-#'   \item Loads required datasets: \code{mfi}, \code{mfi_cor}, and \code{mfi_population}.
+#'   \item Loads required datasets: \code{mfi}, \code{country_code}, and \code{mfi_population}.
+#'   \item Builds \code{mfi_cor} on the fly from selected indicators in \code{mfi}.
 #'   \item Sets formatting options for numbers and fonts.
 #'   \item Defines a helper function \code{format_bignum} for human-readable large numbers (e.g., K, M, Bn, Tn).
 #'   \item Launches the Shiny app using \code{shinyApp(ui = ui, server = server)}.
@@ -27,7 +28,7 @@
 #'   \item{Index}{Tabular view of the dataset.}
 #' }
 #'
-#' @note Ensure that the datasets \code{mfi}, \code{mfi_cor}, and \code{mfi_population} are available in your
+#' @note Ensure that the datasets \code{mfi}, \code{country_code}, and \code{mfi_population} are available in your
 #' environment or loaded via a package before calling this function.
 #'
 #' @return A running Shiny app in the default web browser.
@@ -41,6 +42,8 @@
 worldbank<-function() {
   options(scipen=999)
   data("mfi")
+  data("country_code")
+  data("mfi_population")
   font_style<-list(size=20,color="gray25",weight="bold")
   colors=c("#e6194b","#3cb44b","#ffe119","#0082c8","#f58231","#911eb4","#46f0f0",
            "#f032e6","#d2f53c","#fabebe","#008080","#e6beff","#aa6e28","#fffac8",
@@ -54,7 +57,7 @@ worldbank<-function() {
                      TRUE~as.character(n))
   }
   ##########################################################################################
-  # 
+  #
   ##########################################################################################
   ui<-navbarPage(
     # includeHTML("google-analytics.html"),
@@ -149,7 +152,7 @@ worldbank<-function() {
                         plotly::plotlyOutput("plot_map")),
                tabPanel("Index",DT::dataTableOutput("index_table"))))
   ##########################################################################################
-  # 
+  #
   ##########################################################################################
   server<-function(input,output,session) {
     observeEvent(input$multiple_country_comp, {
@@ -170,7 +173,7 @@ worldbank<-function() {
                            selected=multiple_indicator_comp,
                            server=TRUE)
     })
-    
+
     updateSelectizeInput(session,
                          inputId="indicator_cor1",
                          label="",
@@ -195,8 +198,9 @@ worldbank<-function() {
                          choices=sort(unique(mfi$`Indicator Name`)),
                          selected="Population, total",
                          server=TRUE)
-    
+
     output$plot_country_comp<-plotly::renderPlotly({
+      gc()
       temp<-mfi[mfi$`Country Name`%in%input$multiple_country_comp&mfi$`Indicator Name`%in%input$indicator_country_comp,]
       temp<-temp[complete.cases(temp),]
       temp$Year<-droplevels(temp$Year)
@@ -224,6 +228,7 @@ worldbank<-function() {
                        font=font_style)
     })
     output$plot_indicator_comp<-plotly::renderPlotly({
+      gc()
       temp<-mfi[mfi$`Country Name` %in% input$country_indicator_comp & mfi$`Indicator Name` %in% input$multiple_indicator_comp,]
       # temp<-mfi[mfi$`Country Name` %in% "Greece" & mfi$`Indicator Name` %in% "Population, total",]
       # input<-list(dimension=c(1000,1000))
@@ -254,6 +259,7 @@ worldbank<-function() {
                        font=font_style)
     })
     output$plot_pyramid<-plotly::renderPlotly({
+      gc()
       temp<-mfi_population[mfi_population$`Country Name`%in%input$indicator_pyramid_country,]
       # temp<-mfi_population[mfi_population$`Country Name`%in%"Greece",]
       temp<-temp[complete.cases(temp),]
@@ -289,6 +295,7 @@ worldbank<-function() {
         plotly::animation_opts(frame=500,easing="linear",redraw=TRUE,mode="immediate")
     })
     output$plot_bar<-plotly::renderPlotly({
+      gc()
       temp<-mfi[mfi$`Indicator Name`%in%input$indicator_bar,]
       # temp<-mfi[mfi$`Indicator Name`%in%"Population, total",]
       temp<-temp[complete.cases(temp),]
@@ -297,7 +304,7 @@ worldbank<-function() {
       temp<-dplyr::mutate(dplyr::group_by(temp,Year),
                           rank=order(order(value,Year,decreasing=TRUE)))
       temp_factor<-data.frame(temp[temp$Year%in%max(as.character(temp$Year),na.rm=TRUE),],check.names=FALSE)
-      
+
       temp$`Country Name`<-factor(temp$`Country Name`,
                                   levels=temp_factor[order(temp_factor$value),"Country Name"])
       if(nrow(temp)>1) {
@@ -328,6 +335,7 @@ worldbank<-function() {
       }
     })
     output$plot_map<-plotly::renderPlotly({
+      gc()
       g<-list(showframe=FALSE,showcoastlines=TRUE,projection=list(type='Mercator'))
       temp<-mfi[mfi$`Indicator Name` %in% input$indicator_map,]
       # temp<-mfi[mfi$`Indicator Name` %in% "Population, total",]
@@ -356,78 +364,80 @@ worldbank<-function() {
                        font=font_style)%>%
         plotly::animation_opts(frame=1000,easing="linear",redraw=TRUE,mode="immediate")
     })
-  output$plot_cor<-plotly::renderPlotly({
-    gc()
-    ##########################################################################################
-    # mfi_temp<-mfi[mfi$`Indicator Name`%in%c("Mortality rate, adult, male (per 1,000 male adults)","Mortality rate, infant (per 1,000 live births)","Population, total"),]
-    mfi_temp<-mfi[mfi$`Indicator Name`%in%c(input$indicator_cor1,input$indicator_cor2,"Population, total"),]
-    mfi_cor<-reshape(mfi_temp[,c("Country Name","Indicator Name","Year","value")],
-                     timevar="Indicator Name",
-                     idvar=c("Country Name","Year"),
-                     direction="wide")
-    names(mfi_cor)<-gsub("value.","",names(mfi_cor),fixed=TRUE)
-    row.names(mfi_cor)<-NULL
-    
-    mfi_cor<-merge(country_code[,c("Country Code","Short Name","Region")],mfi_cor,by.x=c("Short Name"),by.y=c("Country Name"),all.y=TRUE)
-    ##########################################################################################
-    factorlist<-c("Year","Short Name","Region","Population, total")
-    temp<-mfi_cor[,c(input$indicator_cor1,input$indicator_cor2,factorlist)]
-    # temp<-mfi_cor[,c("Population, total","Population, total",factorlist)]
-    temp<-temp[complete.cases(temp),]
-    temp$Region[temp$Region==""]<-NA
-    temp<-temp[!is.na(temp$Region),]
-    temp$Year<-droplevels(temp$Year)
-    plotly::plot_ly(temp,
-                    x=temp[,1],
-                    y=temp[,2],
-                    color=~temp$Region,
-                    size=~temp$`Population, total`,
-                    frame=~Year,
-                    ids=~temp$`Short Name`,
-                    text=~paste("\nRegion=",temp$Region,
-                                "\nCountry=",temp$`Short Name`),
-                    type="scatter",
-                    mode="markers",
-                    fill=~'',
-                    marker=list(sizemode='diameter'),
-                    # colors=colors,
-                    width=(as.numeric(input$dimension[1])-30),
-                    height=(as.numeric(input$dimension[2])-120)
-    ) %>%
-      plotly::layout(autosize=TRUE,
-                     showlegend=TRUE,
-                     margin=list(l=50,r=50,b=250,t=100,pad=0),
-                     # legend=list(orientation="v",xanchor="center",x=.5,y=1),
-                     title="",
-                     xaxis=list(title=list(text=unique(input$indicator_cor1),standoff=3)),
-                     yaxis=list(title=unique(input$indicator_cor2)),
-                     font=font_style)%>%
-      plotly::animation_opts(frame=500,easing="linear",redraw=TRUE,mode="afterall") %>%
-      layout(
-        updatemenus = list(
-          list(
-            type = "buttons",
-            direction = "right",
-            x = 0,   # aligns with play button
-            y = 0,   # aligns with play button
-            showactive = FALSE,
-            buttons = list(
-              list(
-                label = "Pause",
-                method = "animate",
-                args = list(NULL, list(mode = "none"))
-              ),
-              # Your Stop button
-              list(
-                label = "Stop",
-                method = "animate",
-                args = list(NULL, list(mode = "immediate"))
+    output$plot_cor<-plotly::renderPlotly({
+      gc()
+      ##########################################################################################
+      # mfi_temp<-mfi[mfi$`Indicator Name`%in%c("Mortality rate, adult, male (per 1,000 male adults)","Mortality rate, infant (per 1,000 live births)","Population, total"),]
+      mfi_temp<-mfi[mfi$`Indicator Name`%in%c(input$indicator_cor1,input$indicator_cor2,"Population, total"),]
+      mfi_cor<-reshape(mfi_temp[,c("Country Name","Indicator Name","Year","value")],
+                       timevar="Indicator Name",
+                       idvar=c("Country Name","Year"),
+                       direction="wide")
+      names(mfi_cor)<-gsub("value.","",names(mfi_cor),fixed=TRUE)
+      row.names(mfi_cor)<-NULL
+
+      mfi_cor<-merge(country_code[,c("Country Code","Short Name","Region")],mfi_cor,by.x=c("Short Name"),by.y=c("Country Name"),all.y=TRUE)
+      ##########################################################################################
+      factorlist<-c("Year","Short Name","Region","Population, total")
+      temp<-mfi_cor[,c(input$indicator_cor1,input$indicator_cor2,factorlist)]
+      # temp<-mfi_cor[,c("Population, total","Population, total",factorlist)]
+      temp<-temp[complete.cases(temp),]
+      temp$Region[temp$Region==""]<-NA
+      temp<-temp[!is.na(temp$Region),]
+      temp$Year<-droplevels(temp$Year)
+      plotly::plot_ly(temp,
+                      x=temp[,1],
+                      y=temp[,2],
+                      color=~temp$Region,
+                      size=~temp$`Population, total`,
+                      frame=~Year,
+                      ids=~temp$`Short Name`,
+                      text=~paste("\nRegion=",temp$Region,
+                                  "\nCountry=",temp$`Short Name`),
+                      type="scatter",
+                      mode="markers",
+                      fill=~'',
+                      marker=list(sizemode='diameter'),
+                      # colors=colors,
+                      width=(as.numeric(input$dimension[1])-30),
+                      height=(as.numeric(input$dimension[2])-120)
+      ) %>%
+        plotly::layout(autosize=TRUE,
+                       showlegend=TRUE,
+                       margin=list(l=50,r=50,b=250,t=100,pad=0),
+                       # legend=list(orientation="v",xanchor="center",x=.5,y=1),
+                       title="",
+                       xaxis=list(title=list(text=unique(input$indicator_cor1),standoff=3)),
+                       yaxis=list(title=unique(input$indicator_cor2)),
+                       font=font_style)%>%
+        plotly::animation_opts(frame=500,easing="linear",redraw=TRUE,mode="afterall") %>%
+        layout(
+          updatemenus = list(
+            list(
+              type = "buttons",
+              direction = "right",
+              x = 0,   # aligns with play button
+              y = 0,   # aligns with play button
+              showactive = FALSE,
+              buttons = list(
+                list(
+                  label = "Pause",
+                  method = "animate",
+                  args = list(NULL, list(mode = "none"))
+                ),
+                # Your Stop button
+                list(
+                  label = "Stop",
+                  method = "animate",
+                  args = list(NULL, list(mode = "immediate"))
+                )
               )
             )
           )
         )
-      )
-  })
+
+
+    })
     output$index_table=DT::renderDataTable({
       data<-data.frame(Indicator=unique(mfi$`Indicator Name`))
       result<-DT::datatable(data,options=list(paging=FALSE))
@@ -435,7 +445,7 @@ worldbank<-function() {
     })
   }
   ##########################################################################################
-  # 
+  #
   ##########################################################################################
   shinyApp(ui = ui, server = server)
 }
