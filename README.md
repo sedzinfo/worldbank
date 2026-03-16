@@ -50,18 +50,18 @@ The data updates almost yearly so there is no need for frequent updates
 
 ```
 worldbank/
-├── R/                    # R functions
-│   ├── data.R            # Data documentation
-│   └── run_shiny.R       # Shiny app code
-├── data/                 # Package datasets
-│   ├── mfi.rda           # Main indicators
-│   ├── country_code.rda  # Country metadata and classifications
+├── R/                     # R functions
+│   ├── data.R             # Data documentation
+│   └── run_shiny.R        # Shiny app code
+├── data/                  # Package datasets
+│   ├── mfi.rda            # Main indicators
+│   ├── country_code.rda   # Country metadata and classifications
 │   ├── mfi_population.rda # Age/sex population dataset for pyramids
-│   ├── WDICountry.csv    # Country metadata
-│   └── WDICSV.csv        # Raw data
-├── data-raw/             # Data processing scripts
-├── man/                  # Documentation
-└── screenshot/           # Application screenshots
+│   ├── WDICountry.csv     # Country metadata
+│   └── WDICSV.csv         # Raw data
+├── data-raw/              # Data processing scripts
+├── man/                   # Documentation
+└── screenshot/            # Application screenshots
 ```
 
 ## Features
