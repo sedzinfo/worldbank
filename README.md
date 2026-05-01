@@ -84,6 +84,58 @@ The package includes World Bank indicators covering:
 
 Data source: [World Bank Open Data](https://data.worldbank.org)
 
+---
+
+## Git LFS Setup
+
+Large files (e.g. datasets) are stored using [Git LFS](https://git-lfs.com). Follow the steps below to clone the repository and retrieve them.
+
+### 1. Install Git LFS (one-time setup)
+
+**Ubuntu/Debian:**
+```bash
+sudo apt install git-lfs
+git lfs install
+```
+
+**Mac:**
+```bash
+brew install git-lfs
+git lfs install
+```
+
+**Windows:**
+
+Download and run the installer from https://git-lfs.com, then:
+```bash
+git lfs install
+```
+
+### 2. Clone the repository
+
+```bash
+git clone https://github.com/sedzinfo/worldbank.git
+cd worldbank
+```
+
+### 3. Pull the LFS files
+
+```bash
+git lfs pull
+```
+
+> **Note:** If you cloned the repository *before* installing Git LFS and large files appear as small pointer files, run:
+> ```bash
+> git lfs install
+> git lfs pull
+> ```
+
+To verify that LFS files downloaded correctly:
+```bash
+git lfs ls-files
+```
+
+
 # Screenshots
 
 <img src="https://raw.githubusercontent.com/sedzinfo/worldbank/master/screenshot/worldbank1.png">
