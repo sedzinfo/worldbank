@@ -95,3 +95,85 @@ save(mfi_population,file=paste0(directory,"data/mfi_population.rda"),version=3)
 # rwf::cdf(mfi)
 # rwf::cdf(mfi_cor)
 # rwf::cdf(mfi_population)
+
+
+mfi_greece<-mfi[mfi$`Country Name`%in%"Greece",]
+
+unique(mfi_greece$`Indicator Name`)
+##########################################################################################
+# SCATTERPLOTS: GREECE FERTILITY vs GDP
+##########################################################################################
+# note: WDI has no debt data at all for Greece (its debt indicators mainly cover
+# developing economies), so only fertility vs GDP per capita is plotted here.
+scatter_indicators<-c("Fertility rate, total (births per woman)",
+                      "GDP per capita (current US$)")
+mfi_greece_scatter<-mfi[mfi$`Country Name`%in%"Greece"&mfi$`Indicator Name`%in%scatter_indicators,]
+mfi_greece_scatter<-reshape(mfi_greece_scatter[,c("Country Name","Year","Indicator Name","value")],
+                            timevar="Indicator Name",
+                            idvar=c("Country Name","Year"),
+                            direction="wide")
+names(mfi_greece_scatter)<-gsub("value.","",names(mfi_greece_scatter),fixed=TRUE)
+names(mfi_greece_scatter)[names(mfi_greece_scatter)=="Fertility rate, total (births per woman)"]<-"Fertility"
+names(mfi_greece_scatter)[names(mfi_greece_scatter)=="GDP per capita (current US$)"]<-"GDP"
+mfi_greece_scatter$Year<-as.numeric(as.character(mfi_greece_scatter$Year))
+
+greece_fertility_gdp<-mfi_greece_scatter[complete.cases(mfi_greece_scatter[,c("Fertility","GDP")]),]
+
+plot_fertility_gdp<-plotly::plot_ly(greece_fertility_gdp,
+                                    x=~GDP,
+                                    y=~Fertility,
+                                    color=~Year,
+                                    text=~paste0("\nYear=",Year,
+                                                 "\nGDP per capita=",round(GDP,0),
+                                                 "\nFertility=",round(Fertility,2)),
+                                    type="scatter",
+                                    mode="markers")
+plot_fertility_gdp<-plotly::layout(plot_fertility_gdp,
+                                   title=list(text="Greece: Fertility Rate vs<br>GDP per Capita (current US$)",
+                                             font=list(size=26)),
+                                   font=list(size=18),
+                                   margin=list(t=120),
+                                   xaxis=list(title="GDP per capita (current US$)"),
+                                   yaxis=list(title="Fertility rate, total (births per woman)"))
+plot_fertility_gdp
+##########################################################################################
+# BARPLOTS: GREECE FERTILITY AND GDP BY YEAR (dual axis, grouped)
+##########################################################################################
+bar_fertility_gdp<-plotly::plot_ly(greece_fertility_gdp)
+bar_fertility_gdp<-plotly::add_trace(bar_fertility_gdp,
+                                     x=~Year,
+                                     y=~GDP,
+                                     type="bar",
+                                     name="GDP per capita (current US$)",
+                                     yaxis="y",
+                                     offsetgroup="GDP",
+                                     marker=list(color="#1f77b4"))
+bar_fertility_gdp<-plotly::add_trace(bar_fertility_gdp,
+                                     x=~Year,
+                                     y=~Fertility,
+                                     type="bar",
+                                     name="Fertility rate, total (births per woman)",
+                                     yaxis="y2",
+                                     offsetgroup="Fertility",
+                                     marker=list(color="#d62728"))
+bar_fertility_gdp<-plotly::layout(bar_fertility_gdp,
+                                  barmode="group",
+                                  title=list(text="Greece: Fertility Rate and GDP per Capita by Year",
+                                            font=list(size=26)),
+                                  font=list(size=18),
+                                  margin=list(t=140,b=150,r=150),
+                                  xaxis=list(title="Year",tickangle=-90,tickmode="linear",dtick=1),
+                                  yaxis=list(title="GDP per capita (current US$)",side="left",automargin=TRUE),
+                                  yaxis2=list(title="Fertility rate, total (births per woman)",
+                                              overlaying="y",
+                                              side="right",
+                                              showgrid=FALSE,
+                                              automargin=TRUE),
+                                  # legend=list(orientation="h",xanchor="center",x=.5,y=1.2),
+                                  annotations=list(list(text="Source: World Bank, World Development Indicators (WDI)",
+                                                        showarrow=FALSE,
+                                                        xref="paper",yref="paper",
+                                                        x=0,y=-.35,
+                                                        xanchor="left",yanchor="top",
+                                                        font=list(size=10,color="grey10"))))
+bar_fertility_gdp
