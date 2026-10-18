@@ -1,22 +1,12 @@
 name: Build package tarball
 
+# Runs only from the Actions tab ("Run workflow"): each run downloads about 300 MB of data from Git LFS,
+# and the tarball (about 110 MB) is too large to commit, so it is attached to the run as a download instead
 on:
-  push:
-    branches: [ "main" ]
-    paths:                                        # only when the package itself changes
-      - "R/**"
-      - "man/**"
-      - "data/**"
-      - "inst/**"
-      - "DESCRIPTION"
-      - "NAMESPACE"
-      - "LICENSE"
-      - ".Rbuildignore"
-      - ".github/workflows/build-tarball.yml"
-  workflow_dispatch:                              # also allows a manual run from the Actions tab
+  workflow_dispatch:
 
 permissions:
-  contents: write                                 # needed to commit the tarball back
+  contents: read
 
 concurrency:
   group: build-tarball
@@ -46,4 +36,13 @@ jobs:
 
       - name: Build PDF manual
         run: R CMD Rd2pdf . --force --no-preview --output=worldbank.pdf
+
+      # download from the run's page (Artifacts); kept for 30 days
+      - uses: actions/upload-artifact@v4
+        with:
+          name: worldbank-tarball-and-manual
+          path: |
+            worldbank_*.tar.gz
+            worldbank.pdf
+          retention-days: 30
 
