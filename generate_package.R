@@ -20,6 +20,7 @@ setwd(directory)
 # usethis::use_data_raw(name='data/mfi_cor.rda')
 # usethis::use_data_raw(name='data/mfi_population.rda')
 document()
+if ("worldbank" %in% loadedNamespaces()) unloadNamespace("worldbank") # an old version still loaded would make the reinstalled one look corrupt
 if ("worldbank" %in% rownames(installed.packages())) remove.packages("worldbank")
 install()
 library(worldbank)
