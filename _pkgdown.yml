@@ -1,0 +1,23 @@
+url: https://sedzinfo.github.io/worldbank/
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  includes:
+    # cookie banner and Google Analytics, shared by every site under sedzinfo.github.io (consent.js in that repository)
+    after_body: '<script src="/consent.js" defer></script>'
+
+code:
+  width: 200
+
+destination: docs
+
+navbar:
+  structure:
+    left: [intro, reference, articles]
+    right: [github]
+  components:
+    github:
+      icon: fab fa-github
+      href: https://github.com/sedzinfo/worldbank
+      aria-label: GitHub

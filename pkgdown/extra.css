@@ -1,0 +1,15 @@
+/* Horizontal scroll for wide example/code output */
+div.sourceCode pre,
+pre.sourceCode {
+  overflow-x: auto;
+  white-space: pre;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+div.sourceCode pre code,
+pre.sourceCode code {
+  word-wrap: normal;
+  overflow-wrap: normal;
+  white-space: inherit;
+}
