@@ -156,5 +156,4 @@ git lfs ls-files
 ![Last Commit](https://img.shields.io/github/last-commit/sedzinfo/worldbank)
 ![Contributors](https://img.shields.io/github/contributors/sedzinfo/worldbank)
 ![License](https://img.shields.io/github/license/sedzinfo/worldbank)
-![Release](https://img.shields.io/github/v/release/sedzinfo/worldbank)
-![Workflow Status](https://img.shields.io/github/actions/workflow/status/sedzinfo/worldbank/main.yml)
+![Workflow Status](https://img.shields.io/github/actions/workflow/status/sedzinfo/worldbank/build-tarball.yml)
