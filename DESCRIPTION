@@ -9,6 +9,8 @@ Depends: R (>= 3.5.0), shiny, magrittr
 Imports: DT, dplyr, plotly
 Description: Visualization of descriptive statistics of financial indicators provided by World Bank organization.
 License: GPL-3
+URL: https://sedzinfo.github.io/worldbank/, https://github.com/sedzinfo/worldbank
+BugReports: https://github.com/sedzinfo/worldbank/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 LazyData: true
