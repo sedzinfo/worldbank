@@ -7,11 +7,18 @@ Author: Dimitrios Zacharatos [aut, cre]
 Maintainer: Dimitrios Zacharatos <dzacharatos@yahoo.com>
 Depends: R (>= 3.5.0), shiny, magrittr
 Imports: DT, dplyr, plotly
-Description: Visualization of descriptive statistics of financial indicators provided by World Bank organization.
+Description: An interactive 'shiny' application for exploring World Bank
+    development indicators (economic, social and demographic) for countries
+    worldwide from 1960 onwards. Indicators can be compared across countries
+    or across indicators over time, and shown as bar plots, scatter plots,
+    world maps and population pyramids built with 'plotly', with a
+    searchable index of all indicators built with 'DT'. The cleaned data
+    from World Bank Open Data <https://data.worldbank.org> ship with the
+    package.
 License: GPL-3
 URL: https://sedzinfo.github.io/worldbank/, https://github.com/sedzinfo/worldbank
 BugReports: https://github.com/sedzinfo/worldbank/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 LazyData: true
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1
