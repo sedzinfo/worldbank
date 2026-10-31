@@ -28,22 +28,23 @@
 #'   \item{Index}{Tabular view of the dataset.}
 #' }
 #'
-#' @note Ensure that the datasets \code{mfi}, \code{country_code}, and \code{mfi_population} are available in your
-#' environment or loaded via a package before calling this function.
+#' @note The datasets \code{mfi}, \code{country_code}, and \code{mfi_population} ship with the package and
+#' are read from it, so nothing needs to be loaded beforehand and nothing is added to your workspace.
 #'
 #' @return A running Shiny app in the default web browser.
 #' @import shiny
 #' @import plotly
 #' @import dplyr
 #' @import htmltools
+#' @importFrom magrittr %>%
 #' @export
 #' @examples
 #' # worldbank()
 worldbank<-function() {
   options(scipen=999)
-  data("mfi")
-  data("country_code")
-  data("mfi_population")
+  mfi<-worldbank::mfi
+  country_code<-worldbank::country_code
+  mfi_population<-worldbank::mfi_population
   font_style<-list(size=20,color="gray25",weight="bold")
   colors=c("#e6194b","#3cb44b","#ffe119","#0082c8","#f58231","#911eb4","#46f0f0",
            "#f032e6","#d2f53c","#fabebe","#008080","#e6beff","#aa6e28","#fffac8",
@@ -160,7 +161,7 @@ worldbank<-function() {
       indicator_country_comp<-input$indicator_country_comp
       updateSelectizeInput(session,
                            inputId="indicator_country_comp",
-                           choices=unique(temp_choice[complete.cases(temp_choice),"Indicator Name"]),
+                           choices=unique(temp_choice[stats::complete.cases(temp_choice),"Indicator Name"]),
                            selected=indicator_country_comp,
                            server=TRUE)
     })
@@ -169,7 +170,7 @@ worldbank<-function() {
       multiple_indicator_comp<-input$multiple_indicator_comp
       updateSelectizeInput(session,
                            inputId="multiple_indicator_comp",
-                           choices=unique(temp_choice[complete.cases(temp_choice),"Indicator Name"]),
+                           choices=unique(temp_choice[stats::complete.cases(temp_choice),"Indicator Name"]),
                            selected=multiple_indicator_comp,
                            server=TRUE)
     })
@@ -202,7 +203,7 @@ worldbank<-function() {
     output$plot_country_comp<-plotly::renderPlotly({
       gc()
       temp<-mfi[mfi$`Country Name`%in%input$multiple_country_comp&mfi$`Indicator Name`%in%input$indicator_country_comp,]
-      temp<-temp[complete.cases(temp),]
+      temp<-temp[stats::complete.cases(temp),]
       temp$Year<-droplevels(temp$Year)
       plotly::plot_ly(temp,
                       x=~temp$Year,
@@ -232,7 +233,7 @@ worldbank<-function() {
       temp<-mfi[mfi$`Country Name` %in% input$country_indicator_comp & mfi$`Indicator Name` %in% input$multiple_indicator_comp,]
       # temp<-mfi[mfi$`Country Name` %in% "Greece" & mfi$`Indicator Name` %in% "Population, total",]
       # input<-list(dimension=c(1000,1000))
-      temp<-temp[complete.cases(temp),]
+      temp<-temp[stats::complete.cases(temp),]
       temp$Year<-droplevels(temp$Year)
       plotly::plot_ly(temp,
                       x=~temp$Year,
@@ -262,7 +263,7 @@ worldbank<-function() {
       gc()
       temp<-mfi_population[mfi_population$`Country Name`%in%input$indicator_pyramid_country,]
       # temp<-mfi_population[mfi_population$`Country Name`%in%"Greece",]
-      temp<-temp[complete.cases(temp),]
+      temp<-temp[stats::complete.cases(temp),]
       temp[temp$sex%in%"Male","value"]<-temp[temp$sex%in%"Male","value"]*-1
       temp$value<-round(temp$value,2)
       temp$Year<-droplevels(temp$Year)
@@ -298,11 +299,11 @@ worldbank<-function() {
       gc()
       temp<-mfi[mfi$`Indicator Name`%in%input$indicator_bar,]
       # temp<-mfi[mfi$`Indicator Name`%in%"Population, total",]
-      temp<-temp[complete.cases(temp),]
+      temp<-temp[stats::complete.cases(temp),]
       temp<-temp[temp$value>0,]
       temp$Year<-droplevels(temp$Year)
-      temp<-dplyr::mutate(dplyr::group_by(temp,Year),
-                          rank=order(order(value,Year,decreasing=TRUE)))
+      temp<-dplyr::mutate(dplyr::group_by(temp,.data$Year),
+                          rank=order(order(.data$value,.data$Year,decreasing=TRUE)))
       temp_factor<-data.frame(temp[temp$Year%in%max(as.character(temp$Year),na.rm=TRUE),],check.names=FALSE)
 
       temp$`Country Name`<-factor(temp$`Country Name`,
@@ -340,7 +341,7 @@ worldbank<-function() {
       temp<-mfi[mfi$`Indicator Name` %in% input$indicator_map,]
       # temp<-mfi[mfi$`Indicator Name` %in% "Population, total",]
       # temp$Region[temp$Region==""]<-NA
-      temp<-temp[complete.cases(temp),]
+      temp<-temp[stats::complete.cases(temp),]
       temp$Year<-droplevels(temp$Year)
       plotly::plot_ly(temp,
                       z=~value,
@@ -369,7 +370,7 @@ worldbank<-function() {
       ##########################################################################################
       # mfi_temp<-mfi[mfi$`Indicator Name`%in%c("Mortality rate, adult, male (per 1,000 male adults)","Mortality rate, infant (per 1,000 live births)","Population, total"),]
       mfi_temp<-mfi[mfi$`Indicator Name`%in%c(input$indicator_cor1,input$indicator_cor2,"Population, total"),]
-      mfi_cor<-reshape(mfi_temp[,c("Country Name","Indicator Name","Year","value")],
+      mfi_cor<-stats::reshape(mfi_temp[,c("Country Name","Indicator Name","Year","value")],
                        timevar="Indicator Name",
                        idvar=c("Country Name","Year"),
                        direction="wide")
@@ -381,7 +382,7 @@ worldbank<-function() {
       factorlist<-c("Year","Short Name","Region","Population, total")
       temp<-mfi_cor[,c(input$indicator_cor1,input$indicator_cor2,factorlist)]
       # temp<-mfi_cor[,c("Population, total","Population, total",factorlist)]
-      temp<-temp[complete.cases(temp),]
+      temp<-temp[stats::complete.cases(temp),]
       temp$Region[temp$Region==""]<-NA
       temp<-temp[!is.na(temp$Region),]
       temp$Year<-droplevels(temp$Year)

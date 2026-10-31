@@ -1,0 +1,17 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^.*\.code-workspace$
+^generate_package.*\.R$
+^[^/]*\.tar\.gz$
+^[^/]*\.pdf$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
+^LICENSE$
+^data-raw$
+^financial_indicators\.R$
+^screenshot$
+^data/WDI_CSV\.zip$
+^data/WDICSV\.csv$
+^data/WDICountry\.csv$
