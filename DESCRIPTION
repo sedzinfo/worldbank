@@ -6,7 +6,7 @@ Authors@R: person("Dimitrios", "Zacharatos", , "dzacharatos@yahoo.com", role = c
 Author: Dimitrios Zacharatos [aut, cre]
 Maintainer: Dimitrios Zacharatos <dzacharatos@yahoo.com>
 Depends: R (>= 3.5.0), shiny, magrittr
-Imports: DT, dplyr, plotly
+Imports: DT, dplyr, htmltools, plotly
 Description: An interactive 'shiny' application for exploring World Bank
     development indicators (economic, social and demographic) for countries
     worldwide from 1960 onwards. Indicators can be compared across countries
