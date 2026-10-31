@@ -35,8 +35,8 @@ The Shiny app interface includes:
 }
 }
 \note{
-Ensure that the datasets \code{mfi}, \code{country_code}, and \code{mfi_population} are available in your
-environment or loaded via a package before calling this function.
+The datasets \code{mfi}, \code{country_code}, and \code{mfi_population} ship with the package and
+are read from it, so nothing needs to be loaded beforehand and nothing is added to your workspace.
 }
 \examples{
 # worldbank()

@@ -88,9 +88,10 @@ mfi$Region<-NULL
 mfi$Year<-droplevels(mfi$Year)
 row.names(mfi)<-NULL
 
-save(mfi,file=paste0(directory,"data/mfi.rda"),version=3)
-save(country_code,file=paste0(directory,"data/country_code.rda"),version=3)
-save(mfi_population,file=paste0(directory,"data/mfi_population.rda"),version=3)
+# the compression R CMD check finds smallest for each file; gzip makes it warn
+save(mfi,file=paste0(directory,"data/mfi.rda"),version=3,compress="xz")
+save(country_code,file=paste0(directory,"data/country_code.rda"),version=3,compress="xz")
+save(mfi_population,file=paste0(directory,"data/mfi_population.rda"),version=3,compress="bzip2")
 
 # rwf::cdf(mfi)
 # rwf::cdf(mfi_cor)

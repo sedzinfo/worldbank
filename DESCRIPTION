@@ -21,4 +21,5 @@ BugReports: https://github.com/sedzinfo/worldbank/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 LazyData: true
+LazyDataCompression: gzip
 Config/roxygen2/version: 8.1.1
