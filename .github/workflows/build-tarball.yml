@@ -16,7 +16,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # the package data (data/) is stored in Git LFS; fetch only that
       - name: Fetch package data from LFS
@@ -32,13 +32,15 @@ jobs:
       - uses: r-lib/actions/setup-tinytex@v2
 
       - name: Install LaTeX packages for the R manual
-        run: tlmgr install inconsolata upquote makeindex
+        run: |
+          tlmgr update --self                     # tlmgr must match the TeX Live repository, or it refuses to install
+          tlmgr install inconsolata upquote makeindex
 
       - name: Build PDF manual
         run: R CMD Rd2pdf . --force --no-preview --output=worldbank.pdf
 
       # download from the run's page (Artifacts); kept for 30 days
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: worldbank-tarball-and-manual
           path: |
